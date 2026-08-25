@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="DinnersReady.Android/DinnersReady.Android.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="DinnersReady.Browser/DinnersReady.Browser.csproj" />
+  <Project Path="DinnersReady.Desktop/DinnersReady.Desktop.csproj" />
+  <Project Path="DinnersReady.iOS/DinnersReady.iOS.csproj" />
+  <Project Path="DinnersReady/DinnersReady.csproj" />
+</Solution>

@@ -1,0 +1,30 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base / Unselected Tab Style -->
+    <Style Selector="TabItem">
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+    </Style>
+
+    <!-- Selected Tab Style -->
+    <Style Selector="TabItem:selected">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundAccentBrush}" />
+    </Style>
+
+    <!-- Hover / Pointer-Over State -->
+    <Style Selector="TabItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+    </Style>
+
+    <!-- Selected + Hover State -->
+    <Style Selector="TabItem:selected:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundAccentBrush}" />
+    </Style>
+
+</Styles>

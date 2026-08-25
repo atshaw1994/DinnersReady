@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             xmlns:models="using:DinnersReady.Models"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
+             x:Class="DinnersReady.Views.AddIngredientOverlayView"
+             x:DataType="vm:MainViewModel">
+
+    <Grid x:Name="OverlayPanel"
+          Background="{DynamicResource SystemRegionBrush}" 
+          RowDefinitions="Auto, *"
+          Classes.open="{Binding IsAddingItem}">
+        <Grid.Transitions>
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" 
+                                               Duration="0:0:0.25" 
+                                               Easing="CubicEaseOut"/>
+            </Transitions>
+        </Grid.Transitions>
+
+        <Grid.Styles>
+            <Style Selector="Grid#OverlayPanel">
+                <Setter Property="RenderTransform" Value="translateX(10000px)" />
+            </Style>
+            <Style Selector="Grid#OverlayPanel.open">
+                <Setter Property="RenderTransform" Value="translateX(0px)" />
+            </Style>
+        </Grid.Styles>
+
+        <!-- Header bar with Back Button -->
+        <Grid Margin="16">
+            <Button Command="{Binding CloseAddFormCommand}" 
+                    CornerRadius="40"
+                    Width="48" Height="48">
+                <ic:FluentIcon Icon="Dismiss" IconVariant="Filled"/>
+            </Button>
+            <TextBlock Text="Add Ingredient" 
+                       HorizontalAlignment="Center" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       VerticalAlignment="Center"/>
+            <Button Command="{Binding SaveItemCommand}" 
+                    CornerRadius="40"
+                    HorizontalAlignment="Right"
+                    Width="48" Height="48">
+                <ic:FluentIcon Icon="Checkmark" IconVariant="Filled"/>
+            </Button>
+        </Grid>
+
+        <!-- Form Content -->
+        <ScrollViewer Grid.Row="1" Margin="16">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                <!-- Searchable Ingredient Name -->
+                <StackPanel Spacing="4" Margin="0,8">
+                    <TextBlock Text="Ingredient Name"/>
+                    <AutoCompleteBox Text="{Binding NewItemName, Mode=TwoWay}"
+                                     ItemsSource="{Binding IngredientSuggestions}"
+                                     FilterMode="StartsWithOrdinal"
+                                     PlaceholderText="Type 'Cumin', 'Beef', etc."/>
+                </StackPanel>
+
+                <!-- Category -->
+                <StackPanel Spacing="4" Margin="0,8" Grid.Row="1">
+                    <TextBlock Text="Category"/>
+                    <TextBox Text="{Binding NewItemCategory}" PlaceholderText="e.g. Spice, Produce, Meat"/>
+                </StackPanel>
+
+                <!-- Location Dropdown -->
+                <StackPanel Spacing="4" Margin="0,8" Grid.Row="2">
+                    <TextBlock Text="Location"/>
+                    <ComboBox SelectedIndex="{Binding LocationIndex}" HorizontalAlignment="Stretch">
+                        <ComboBoxItem>Fridge</ComboBoxItem>
+                        <ComboBoxItem>Pantry</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Quantity and Unit -->
+                <Grid ColumnDefinitions="*, 12, *" Margin="0,8" Grid.Row="3">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Quantity"/>
+                        <NumericUpDown Value="{Binding NewItemQuantity}" Minimum="0.1" Increment="1"/>
+                    </StackPanel>
+        
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock Text="Unit"/>
+                        <ComboBox SelectedValue="{Binding SelectedUnit}" ItemsSource="{Binding Source={x:Static models:MeasurementUnits.AllUnits}}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Expiry Date -->
+                <StackPanel Spacing="4" Margin="0,8" Grid.Row="4">
+                    <TextBlock Text="Expiry Date"/>
+                    <DatePicker SelectedDate="{Binding NewItemExpiry}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

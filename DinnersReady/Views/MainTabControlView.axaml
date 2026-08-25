@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
+             x:Class="DinnersReady.Views.MainTabControlView"
+             x:DataType="vm:MainViewModel">
+
+    <TabbedPage TabPlacement="Bottom" Foreground="White">
+        <TabbedPage.Styles>
+            <StyleInclude Source="/Assets/TabbedPageStyles.axaml" />
+        </TabbedPage.Styles>
+        <ContentPage>
+            <ContentPage.Header>
+                <TextBlock Classes="headerText" Text="Home"/>
+            </ContentPage.Header>
+            <Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
+                    <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
+                    <Button Content="Generate" Margin="16" Padding="16" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <Border Background="LightGray" Padding="16" IsVisible="False">
+                    <TextBlock Text="Generated content will appear here." />
+                </Border>
+            </Grid>
+        </ContentPage>
+
+        <ContentPage>
+            <ContentPage.Header>
+                <TextBlock Classes="headerText" Text="Pantry"/>
+            </ContentPage.Header>
+            <TextBlock Text="Pantry content" Margin="16" />
+        </ContentPage>
+
+        <ContentPage>
+            <ContentPage.Header>
+                <TextBlock Classes="headerText" Text="Fridge"/>
+            </ContentPage.Header>
+            <TextBlock Text="Fridge content" Margin="16" />
+        </ContentPage>
+    </TabbedPage>
+</UserControl>
