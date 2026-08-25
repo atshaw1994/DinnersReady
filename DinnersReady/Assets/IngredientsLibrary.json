@@ -1,0 +1,738 @@
+[
+  {
+    "Id": "flour",
+    "Name": "Flour",
+    "Category": "Bakery",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "sugar",
+    "Name": "Sugar",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "salt",
+    "Name": "Salt",
+    "Category": "Spice",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "pinch",
+    "TypicalShelfLifeDays": 1095
+  },
+  {
+    "Id": "pepper",
+    "Name": "Pepper",
+    "Category": "Spice",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "tsp",
+    "TypicalShelfLifeDays": 730
+  },
+  {
+    "Id": "olive-oil",
+    "Name": "Olive Oil",
+    "Category": "Cooking Oil",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 180
+  },
+  {
+    "Id": "vinegar",
+    "Name": "Vinegar",
+    "Category": "Condiment",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "butter",
+    "Name": "Butter",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "milk",
+    "Name": "Milk",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "eggs",
+    "Name": "Eggs",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 21
+  },
+  {
+    "Id": "cheese",
+    "Name": "Cheese",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "rice",
+    "Name": "Rice",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "pasta",
+    "Name": "Pasta",
+    "Category": "Bakery",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "bread",
+    "Name": "Bread",
+    "Category": "Bakery",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 4
+  },
+  {
+    "Id": "yogurt",
+    "Name": "Yogurt",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "coffee-beans",
+    "Name": "Coffee Beans",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "tea-leaves",
+    "Name": "Tea Leaves",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "onion",
+    "Name": "Onion",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "garlic",
+    "Name": "Garlic",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "tomatoes",
+    "Name": "Tomatoes",
+    "Category": "Produce",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "potato",
+    "Name": "Potato",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 21
+  },
+  {
+    "Id": "carrot",
+    "Name": "Carrot",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "broccoli",
+    "Name": "Broccoli",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "cauliflower",
+    "Name": "Cauliflower",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "zucchini",
+    "Name": "Zucchini",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "cucumber",
+    "Name": "Cucumber",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "bell-pepper",
+    "Name": "Bell Pepper",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "mushroom",
+    "Name": "Mushroom",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "asparagus",
+    "Name": "Asparagus",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "lettuce",
+    "Name": "Lettuce",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "spinach",
+    "Name": "Spinach",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "kale",
+    "Name": "Kale",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "swiss-chard",
+    "Name": "Swiss Chard",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "beetroot",
+    "Name": "Beetroot",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "radish",
+    "Name": "Radish",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "turnip",
+    "Name": "Turnip",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "rutabaga",
+    "Name": "Rutabaga",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "sweet-potato",
+    "Name": "Sweet Potato",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 21
+  },
+  {
+    "Id": "apple",
+    "Name": "Apple",
+    "Category": "Produce",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 21
+  },
+  {
+    "Id": "banana",
+    "Name": "Banana",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "orange",
+    "Name": "Orange",
+    "Category": "Produce",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "lemon",
+    "Name": "Lemon",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "lime",
+    "Name": "Lime",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "grapes",
+    "Name": "Grapes",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "pineapple",
+    "Name": "Pineapple",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "mango",
+    "Name": "Mango",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "peach",
+    "Name": "Peach",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "nectarine",
+    "Name": "Nectarine",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "blueberry",
+    "Name": "Blueberry",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "raspberry",
+    "Name": "Raspberry",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "strawberry",
+    "Name": "Strawberry",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "blackberry",
+    "Name": "Blackberry",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "cherry",
+    "Name": "Cherry",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "plum",
+    "Name": "Plum",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "apricot",
+    "Name": "Apricot",
+    "Category": "Produce",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "peanut-butter",
+    "Name": "Peanut Butter",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "jelly",
+    "Name": "Jelly",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 730
+  },
+  {
+    "Id": "jam",
+    "Name": "Jam",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 730
+  },
+  {
+    "Id": "honey",
+    "Name": "Honey",
+    "Category": "Pantry",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 730
+  },
+  {
+    "Id": "mustard",
+    "Name": "Mustard",
+    "Category": "Condiment",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "ketchup",
+    "Name": "Ketchup",
+    "Category": "Condiment",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "mayonnaise",
+    "Name": "Mayonnaise",
+    "Category": "Condiment",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 28
+  },
+  {
+    "Id": "vinegar-white",
+    "Name": "White Vinegar",
+    "Category": "Condiment",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "tbsp",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "bacon",
+    "Name": "Bacon",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "ham",
+    "Name": "Ham",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "sausage",
+    "Name": "Sausage",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "beef",
+    "Name": "Beef",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 5
+  },
+  {
+    "Id": "pork",
+    "Name": "Pork",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "chicken",
+    "Name": "Chicken",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "turkey",
+    "Name": "Turkey",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "lamb",
+    "Name": "Lamb",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "fish",
+    "Name": "Fish",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "shrimp",
+    "Name": "Shrimp",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "crab",
+    "Name": "Crab",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 2
+  },
+  {
+    "Id": "lobster",
+    "Name": "Lobster",
+    "Category": "Meat",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "rice-milk",
+    "Name": "Rice Milk",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "almond-milk",
+    "Name": "Almond Milk",
+    "Category": "Dairy",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "coconut-water",
+    "Name": "Coconut Water",
+    "Category": "Drink",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 3
+  },
+  {
+    "Id": "apple-juice",
+    "Name": "Apple Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "orange-juice",
+    "Name": "Orange Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "grapefruit-juice",
+    "Name": "Grapefruit Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "pineapple-juice",
+    "Name": "Pineapple Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "mango-juice",
+    "Name": "Mango Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 7
+  },
+  {
+    "Id": "papaya-juice",
+    "Name": "Papaya Juice",
+    "Category": "Drink",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "ml",
+    "TypicalShelfLifeDays": 2
+  },
+  {
+    "Id": "tomato-sauce",
+    "Name": "Tomato Sauce",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "canned-beans",
+    "Name": "Canned Beans",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 180
+  },
+  {
+    "Id": "canned-corn",
+    "Name": "Canned Corn",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "canned-peas",
+    "Name": "Canned Peas",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 180
+  },
+  {
+    "Id": "canned-carrots",
+    "Name": "Canned Carrots",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "canned-spinach",
+    "Name": "Canned Spinach",
+    "Category": "Canned",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "canned-artichokes",
+    "Name": "Canned Artichokes",
+    "Category": "Canned",
+    "DefaultLocation": "Pantry",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 365
+  },
+  {
+    "Id": "olives",
+    "Name": "Olives",
+    "Category": "Canned",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "items",
+    "TypicalShelfLifeDays": 14
+  },
+  {
+    "Id": "capers",
+    "Name": "Capers",
+    "Category": "Canned",
+    "DefaultLocation": "Fridge",
+    "DefaultUnit": "g",
+    "TypicalShelfLifeDays": 730
+  }
+]
