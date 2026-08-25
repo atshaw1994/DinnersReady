@@ -8,5 +8,5 @@
         x:Class="DinnersReady.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="DinnersReady">
-        <views:MainView />
+        <views:MainView HorizontalAlignment="Center"/>
 </Window>
