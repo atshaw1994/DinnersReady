@@ -51,7 +51,7 @@
                     <AutoCompleteBox Text="{Binding NewItemName, Mode=TwoWay}"
                                      ItemsSource="{Binding IngredientSuggestions}"
                                      FilterMode="StartsWithOrdinal"
-                                     PlaceholderText="Type 'Cumin', 'Beef', etc."/>
+                                     PlaceholderText="e.g. Cumin, Beef, Potatoes"/>
                 </StackPanel>
 
                 <!-- Category -->

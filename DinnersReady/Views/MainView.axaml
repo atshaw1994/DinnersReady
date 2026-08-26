@@ -8,6 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="800"
              x:Class="DinnersReady.Views.MainView"
              x:DataType="vm:MainViewModel">
+    <!-- DESIGN-TIME DATA CONTEXT -->
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>

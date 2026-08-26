@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             xmlns:models="using:DinnersReady.Models"
+             mc:Ignorable="d" d:DesignWidth="360"
+             x:Class="DinnersReady.Views.IngredientControl"
+             x:DataType="models:Ingredient">
+    <!-- DESIGN-TIME INGREDIENT MOCK -->
+    <Design.DataContext>
+        <models:Ingredient Id="cumin-ground" Name="Ground Cumin" Category="Spices" Quantity="50" Unit="g" />
+    </Design.DataContext>
+
+    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+            CornerRadius="8" 
+            Padding="12" 
+            Margin="0,0,0,8">
+        <Grid ColumnDefinitions="*, Auto">
+            <!-- Ingredient Details -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="{Binding Category}" Opacity="0.7" FontSize="12"/>
+                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
+                    <TextBlock FontSize="12" Opacity="0.7">
+                        <Run Text="{Binding Quantity}"/>
+                        <Run Text="{Binding UnitDisplay}"/>
+                    </TextBlock>
+                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
+                    <TextBlock FontSize="12" Opacity="0.7">
+                        <Run Text="Exp: "/>
+                        <Run Text="{Binding ExpiryDate, StringFormat='{}{0:MM/dd/yy}'}"/>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Edit & Delete Actions -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).EditItemCommand}"
+                        CommandParameter="{Binding}"
+                        Padding="8" Width="36" Height="36" CornerRadius="18">
+                    <ic:FluentIcon Icon="Edit"/>
+                </Button>
+                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteItemCommand}"
+                        CommandParameter="{Binding}"
+                        Padding="8" Width="36" Height="36" CornerRadius="18">
+                    <ic:FluentIcon Icon="Delete"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
