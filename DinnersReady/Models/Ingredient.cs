@@ -16,7 +16,6 @@ public class Ingredient
     public string Category { get; set; } = string.Empty;
     public string DefaultLocation { get; set; } = "Pantry";
     public string DefaultUnit { get; set; } = "g";
-    public int TypicalShelfLifeDays { get; set; }
     public double Quantity { get; set; } = 0.0;
     public string Unit { get; set; } = "g";
     public string UnitDisplay

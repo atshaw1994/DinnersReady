@@ -62,11 +62,7 @@ public partial class MainViewModel : ObservableValidator
             NewItemCategory = match.Category;
             LocationIndex = match.DefaultLocation.Equals("Fridge", StringComparison.OrdinalIgnoreCase) ? 0 : 1;
             SelectedUnit = match.DefaultUnit;
-
-            if (match.TypicalShelfLifeDays > 0)
-            {
-                NewItemExpiry = DateTimeOffset.Now.AddDays(match.TypicalShelfLifeDays);
-            }
+            NewItemExpiry = match.ExpiryDate;
         }
     }
     partial void OnNewItemCategoryChanged(string value) => ValidateProperty(value, nameof(NewItemCategory));
@@ -107,7 +103,6 @@ public partial class MainViewModel : ObservableValidator
             Quantity = NewItemQuantity,
             Unit = SelectedUnit,
             ExpiryDate = NewItemExpiry,
-            TypicalShelfLifeDays = libraryMatch?.TypicalShelfLifeDays ?? 0,
             Location = (StorageLocation)LocationIndex
         };
 
