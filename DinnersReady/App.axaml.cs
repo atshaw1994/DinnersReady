@@ -32,22 +32,20 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Register ViewModels as Transient
-            collection.AddTransient<Views.Desktop.MainWindow>();
+            collection.AddTransient<Views.FullSize.MainWindow>();
 
             Services = collection.BuildServiceProvider();
-            desktop.MainWindow = new Views.Desktop.MainWindow
+            desktop.MainWindow = new Views.FullSize.MainWindow
             {
                 DataContext = Services.GetRequiredService<MainViewModel>()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
-            collection.AddTransient<Views.Browser.MainView>();
+            collection.AddTransient<Views.FullSize.MainWindow>();
 
             Services = collection.BuildServiceProvider();
-            
-            singleView.MainView = new Views.Browser.MainView
+            singleView.MainView = new Views.FullSize.MainWindow
             {
                 DataContext = Services.GetRequiredService<MainViewModel>()
             };

@@ -1,4 +1,6 @@
 ﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 
 namespace DinnersReady.Models;
@@ -9,7 +11,7 @@ public enum StorageLocation
     Pantry
 }
 
-public class Ingredient
+public partial class Ingredient : ObservableObject
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
@@ -32,4 +34,7 @@ public class Ingredient
 
     public DateTimeOffset? ExpiryDate { get; set; } = DateTimeOffset.Now.AddDays(7);
     public StorageLocation Location { get; set; } = StorageLocation.Fridge;
+
+    [ObservableProperty] public partial bool IsEditing { get; set; } = false;
+
 }

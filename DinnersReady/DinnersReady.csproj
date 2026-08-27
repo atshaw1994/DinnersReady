@@ -33,4 +33,8 @@
 		<AvaloniaResource Include="Assets\**" />
 		<EmbeddedResource Include="Assets\IngredientsLibrary.json" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ViewModels\Mobile\" />
+	</ItemGroup>
 </Project>

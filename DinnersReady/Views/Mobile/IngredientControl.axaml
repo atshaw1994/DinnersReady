@@ -38,7 +38,7 @@
 
             <!-- Edit & Delete Actions -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).EditItemCommand}"
+                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).Mobile_EditItemCommand}"
                         CommandParameter="{Binding}"
                         Padding="8" Width="36" Height="36" CornerRadius="18">
                     <ic:FluentIcon Icon="Edit"/>

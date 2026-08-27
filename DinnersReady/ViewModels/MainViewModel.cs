@@ -77,6 +77,8 @@ public partial class MainViewModel : ObservableValidator
 
     [ObservableProperty] public partial bool IsAddingItem { get; set; } = false;
 
+    [ObservableProperty] public partial bool IsEditingItem { get; set; } = false;
+
     [ObservableProperty] public partial Ingredient? ItemCurrentlyEditing { get; set; } = null;
     #endregion
 
@@ -110,10 +112,11 @@ public partial class MainViewModel : ObservableValidator
 
         await LoadInventoryAsync();
         IsAddingItem = false;
+        IsEditingItem = false;
     }
 
     [RelayCommand]
-    private void EditItem(Ingredient item)
+    private void Mobile_EditItem(Ingredient item)
     {
         if (item == null) return;
 
@@ -125,7 +128,26 @@ public partial class MainViewModel : ObservableValidator
         NewItemQuantity = item.Quantity;
         NewItemExpiry = item.ExpiryDate;
 
-        IsAddingItem = true; // Opens the slide-in overlay form
+        IsAddingItem = true;
+        IsEditingItem = true; // Opens the slide-in overlay form
+    }
+
+    [RelayCommand]
+    public async Task ToggleEditIngredient(Ingredient ingredient)
+    {
+        if (ingredient is null) return;
+
+        if (ingredient.IsEditing)
+        {
+            await _ingredientService!.RemoveIngredientAsync(ingredient);
+            await _ingredientService!.AddIngredientAsync(ingredient);
+            await LoadInventoryAsync();
+            ingredient.IsEditing = false;
+        }
+        else
+        {
+            ingredient.IsEditing = true;
+        }
     }
 
     [RelayCommand]
