@@ -1,4 +1,6 @@
-﻿using Avalonia.Platform;
+﻿using Avalonia.Controls;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DinnersReady.Models;
@@ -6,6 +8,7 @@ using DinnersReady.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -13,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace DinnersReady.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableValidator
 {
     // Cache JsonSerializerOptions instance to improve performance and satisfy CA1869
     private readonly JsonSerializerOptions _jsonOptions = new()
@@ -27,6 +30,10 @@ public partial class MainViewModel : ObservableObject
     // Full library loaded from JSON
     public List<Ingredient> IngredientLibrary { get; private set; } = [];
 
+    public bool CanSaveItem => !HasErrors &&
+                               !string.IsNullOrWhiteSpace(NewItemName) &&
+                               !string.IsNullOrWhiteSpace(NewItemCategory);
+
     #region Properties
     [ObservableProperty] public partial ObservableCollection<Ingredient> PantryItems { get; set; } = [];
 
@@ -34,9 +41,35 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] public partial ObservableCollection<string> IngredientSuggestions { get; set; } = [];
 
-    [ObservableProperty] public partial string NewItemName { get; set; } = string.Empty;
+    [ObservableProperty]
+    [Required(ErrorMessage = "Ingredient name is required")]
+    [MinLength(1, ErrorMessage = "Name cannot be empty")]
+    public partial string NewItemName { get; set; } = string.Empty;
 
-    [ObservableProperty] public partial string NewItemCategory { get; set; } = string.Empty;
+    [ObservableProperty]
+    [Required(ErrorMessage = "Category is required")]
+    [MinLength(1, ErrorMessage = "Category cannot be empty")]
+    public partial string NewItemCategory { get; set; } = string.Empty;
+
+    partial void OnNewItemNameChanged(string value)
+    {
+        ValidateProperty(value, nameof(NewItemName));
+
+        var match = IngredientLibrary.FirstOrDefault(i => i.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
+
+        if (match != null)
+        {
+            NewItemCategory = match.Category;
+            LocationIndex = match.DefaultLocation.Equals("Fridge", StringComparison.OrdinalIgnoreCase) ? 0 : 1;
+            SelectedUnit = match.DefaultUnit;
+
+            if (match.TypicalShelfLifeDays > 0)
+            {
+                NewItemExpiry = DateTimeOffset.Now.AddDays(match.TypicalShelfLifeDays);
+            }
+        }
+    }
+    partial void OnNewItemCategoryChanged(string value) => ValidateProperty(value, nameof(NewItemCategory));
 
     [ObservableProperty] public partial int LocationIndex { get; set; } = 0;
 
@@ -58,9 +91,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void CloseAddForm() => IsAddingItem = false;
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanSaveItem))]
     private async Task SaveItem()
     {
+        ValidateAllProperties();
+        if (HasErrors) return;
+
         var libraryMatch = IngredientLibrary.FirstOrDefault(i => i.Name.Equals(NewItemName, StringComparison.OrdinalIgnoreCase));
 
         var newItem = new Ingredient
@@ -110,62 +146,87 @@ public partial class MainViewModel : ObservableObject
     // Design-time constructor
     public MainViewModel()
     {
-        _ingredientService = null;
+        if (Design.IsDesignMode)
+        {
+            _ingredientService = null;
 
-        PantryItems =
-        [
-            new Ingredient { Id = "cumin-ground", Name = "Ground Cumin", Category = "Spices", Quantity = 50, Unit = "g" },
+            PantryItems =
+            [
+                new Ingredient { Id = "cumin-ground", Name = "Ground Cumin", Category = "Spices", Quantity = 50, Unit = "g" },
             new Ingredient { Id = "jasmine-rice", Name = "Jasmine Rice", Category = "Grains", Quantity = 1000, Unit = "g" },
             new Ingredient { Id = "olive-oil", Name = "Olive Oil", Category = "Oils", Quantity = 500, Unit = "ml" }
-        ];
+            ];
 
             FridgeItems =
-        [
-            new Ingredient { Id = "whole-milk", Name = "Whole Milk", Category = "Dairy", Quantity = 1, Unit = "l" },
-            new Ingredient { Id = "cheddar-cheese", Name = "Cheddar Cheese", Category = "Dairy", Quantity = 250, Unit = "g" },
-            new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
-        ];
+            [
+                new Ingredient { Id = "whole-milk", Name = "Whole Milk", Category = "Dairy", Quantity = 1, Unit = "l" },
+                new Ingredient { Id = "cheddar-cheese", Name = "Cheddar Cheese", Category = "Dairy", Quantity = 250, Unit = "g" },
+                new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
+            ]; 
+        }
     }
 
     public MainViewModel(IngredientStore ingredientStore)
     {
         _ingredientService = ingredientStore;
-        LoadLibrary();
-        _ = LoadInventoryAsync();
+
+        // Initialize collections so bindings don't fail null checks
+        IngredientLibrary = [];
+        IngredientSuggestions = [];
+        PantryItems = [];
+        FridgeItems = [];
+
+        // Defer all loading until the WASM UI thread finishes its initial layout pass
+        Dispatcher.UIThread.Post(async () => await InitializeAsync(), DispatcherPriority.Background);
     }
 
-    private void LoadLibrary()
+    private async Task InitializeAsync()
     {
-        var uri = new Uri("avares://DinnersReady/Assets/IngredientsLibrary.json");
-
-        if (AssetLoader.Exists(uri))
-        {
-            using var stream = AssetLoader.Open(uri);
-
-            IngredientLibrary = JsonSerializer.Deserialize<List<Ingredient>>(stream, _jsonOptions) ?? [];
-
-            IngredientSuggestions = new ObservableCollection<string>(
-                IngredientLibrary.Select(i => i.Name)
-            );
-        }
+        await LoadLibraryAsync();
+        await LoadInventoryAsync();
     }
 
-    // Auto-fill logic triggered when user picks or types a recognized item
-    partial void OnNewItemNameChanged(string value)
+    private async Task LoadLibraryAsync()
     {
-        var match = IngredientLibrary.FirstOrDefault(i =>
-            i.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
-
-        if (match != null)
+        try
         {
-            NewItemCategory = match.Category;
-            LocationIndex = match.DefaultLocation.Equals("Fridge", StringComparison.OrdinalIgnoreCase) ? 0 : 1;
-            SelectedUnit = match.DefaultUnit;
+            var uri = new Uri("avares://DinnersReady/Assets/IngredientsLibrary.json");
+            Stream? stream = null;
 
-            if (match.TypicalShelfLifeDays > 0)
+            // Prefer AssetLoader without calling Exists() first
+            if (AssetLoader.Exists(uri))
             {
-                NewItemExpiry = DateTimeOffset.Now.AddDays(match.TypicalShelfLifeDays);
+                stream = AssetLoader.Open(uri);
             }
+            else
+            {
+                var assembly = typeof(MainViewModel).Assembly;
+                stream = assembly.GetManifestResourceStream("DinnersReady.Assets.IngredientsLibrary.json");
+            }
+
+            if (stream != null)
+            {
+                using (stream)
+                {
+                    // Use Async deserialization to keep WASM responsive
+                    var items = await JsonSerializer.DeserializeAsync<List<Ingredient>>(stream, _jsonOptions);
+
+                    if (items != null)
+                    {
+                        IngredientLibrary = items;
+
+                        IngredientSuggestions.Clear();
+                        foreach (var name in IngredientLibrary.Select(i => i.Name))
+                        {
+                            IngredientSuggestions.Add(name);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading ingredient library: {ex.Message}");
         }
     }
 
@@ -173,11 +234,14 @@ public partial class MainViewModel : ObservableObject
     {
         var allItems = await _ingredientService!.GetIngredientsAsync();
 
-        PantryItems = new ObservableCollection<Ingredient>(
-            allItems.Where(i => i.Location == StorageLocation.Pantry));
+        // Clear and repopulate on the UI thread safely
+        PantryItems.Clear();
+        foreach (var item in allItems.Where(i => i.Location == StorageLocation.Pantry))
+            PantryItems.Add(item);
 
-        FridgeItems = new ObservableCollection<Ingredient>(
-            allItems.Where(i => i.Location == StorageLocation.Fridge));
+        FridgeItems.Clear();
+        foreach (var item in allItems.Where(i => i.Location == StorageLocation.Fridge))
+            FridgeItems.Add(item);
     }
 
 }
