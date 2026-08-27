@@ -6,7 +6,7 @@
              xmlns:vm="using:DinnersReady.ViewModels"
              xmlns:models="using:DinnersReady.Models"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
-             x:Class="DinnersReady.Views.AddIngredientOverlayView"
+             x:Class="DinnersReady.Views.Mobile.AddIngredientOverlayView"
              x:DataType="vm:MainViewModel">
 
     <Design.DataContext>

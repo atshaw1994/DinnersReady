@@ -3,9 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:views="using:DinnersReady.Views"
+             xmlns:sharedviews="using:DinnersReady.Views"
+             xmlns:mobileviews="using:DinnersReady.Views.Mobile"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
-             x:Class="DinnersReady.Views.MainTabControlView"
+             x:Class="DinnersReady.Views.Mobile.MainTabControlView"
              x:DataType="vm:MainViewModel">
 
     <TabbedPage TabPlacement="Bottom" Foreground="White">
@@ -34,7 +35,7 @@
                 <TextBlock Classes="headerText" Text="Pantry"/>
             </ContentPage.Header>
     
-            <views:PantryPage/>
+            <mobileviews:PantryPage/>
         </ContentPage>
 
         <!-- FRIDGE TAB -->
@@ -43,7 +44,7 @@
                 <TextBlock Classes="headerText" Text="Fridge"/>
             </ContentPage.Header>
     
-            <views:FridgePage/>
+            <mobileviews:FridgePage/>
         </ContentPage>
     </TabbedPage>
 </UserControl>

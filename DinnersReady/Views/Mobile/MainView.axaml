@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:views="using:DinnersReady.Views"
+             xmlns:sharedviews="using:DinnersReady.Views"
+             xmlns:mobileviews="using:DinnersReady.Views.Mobile"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="800"
              x:Class="DinnersReady.Views.Mobile.MainView"
              x:DataType="vm:MainViewModel">
@@ -14,15 +15,15 @@
 
     <Grid>
         <!-- MAIN CONTENT VIEW -->
-        <Grid>
+        <Grid>  
             <!-- Embed Tab Control -->
-            <views:MainTabControlView />
+            <mobileviews:MainTabControlView />
 
             <!-- Floating Add Button -->
-            <views:FloatingAddButton />
+            <sharedviews:FloatingAddButton />
         </Grid>
 
         <!-- OVERLAY ADD FORM -->
-        <views:AddIngredientOverlayView />
+        <mobileviews:AddIngredientOverlayView />
     </Grid>
 </UserControl>

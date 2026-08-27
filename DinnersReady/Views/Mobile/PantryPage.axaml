@@ -2,12 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:sharedviews="using:DinnersReady.Views"
+             xmlns:mobileviews="using:DinnersReady.Views.Mobile"
              xmlns:vm="using:DinnersReady.ViewModels"
              xmlns:models="using:DinnersReady.Models"
-             xmlns:views="using:DinnersReady.Views"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
-             x:Class="DinnersReady.Views.FridgePage"
+             x:Class="DinnersReady.Views.Mobile.PantryPage"
              x:DataType="vm:MainViewModel">
     <!-- DESIGN-TIME DATA CONTEXT -->
     <Design.DataContext>
@@ -15,19 +15,19 @@
     </Design.DataContext>
 
     <ScrollViewer Margin="16">
+        <!-- Message if Pantry is empty -->
         <StackPanel Spacing="16">
-            <!-- Message if Fridge is empty -->
-            <TextBlock Text="No fridge items added yet." 
-                        IsVisible="{Binding !FridgeItems.Count}" 
+            <TextBlock Text="No pantry items added yet." 
+                        IsVisible="{Binding !PantryItems.Count}" 
                         Opacity="0.6" 
                         HorizontalAlignment="Center" 
                         Margin="0,32,0,0"/>
 
-            <!-- List of Fridge Items -->
-            <ItemsControl ItemsSource="{Binding FridgeItems}">
+            <!-- List of Pantry Items -->
+            <ItemsControl ItemsSource="{Binding PantryItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:Ingredient">
-                        <views:IngredientControl />
+                        <mobileviews:IngredientControl />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
