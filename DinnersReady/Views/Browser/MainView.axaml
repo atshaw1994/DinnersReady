@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DinnersReady.ViewModels"
              xmlns:views="using:DinnersReady.Views"
-             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DinnersReady.Views.Browser.MainView"
              x:DataType="vm:MainViewModel">
     <!-- DESIGN-TIME DATA CONTEXT -->
@@ -13,16 +13,6 @@
     </Design.DataContext>
 
     <Grid>
-        <!-- MAIN CONTENT VIEW -->
-        <Grid>
-            <!-- Embed Tab Control -->
-            <views:MainTabControlView />
-
-            <!-- Floating Add Button -->
-            <views:FloatingAddButton />
-        </Grid>
-
-        <!-- OVERLAY ADD FORM -->
-        <views:AddIngredientOverlayView />
+        <TextBlock Text="Coming Soon..." VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Grid>
 </UserControl>
