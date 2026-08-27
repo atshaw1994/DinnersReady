@@ -5,6 +5,7 @@ using DinnersReady.Services;
 using DinnersReady.ViewModels;
 using DinnersReady.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace DinnersReady;
 
@@ -20,38 +21,44 @@ public partial class App : Application
 
     public System.IServiceProvider? Services { get; private set; }
 
+#pragma warning disable CA1416 // Validate platform compatibility
     public override void OnFrameworkInitializationCompleted()
     {
         var collection = new ServiceCollection();
 
-        // Register Repositories and Services
         collection.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
         collection.AddSingleton<IngredientStore>();
-
-        // Register ViewModels as Transient
         collection.AddTransient<MainViewModel>();
-        collection.AddTransient<MainView>();
-
-        Services = collection.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            // Register ViewModels as Transient
+            collection.AddTransient<Views.Desktop.MainWindow>();
+
+            Services = collection.BuildServiceProvider();
+            desktop.MainWindow = new Views.Desktop.MainWindow
             {
                 DataContext = Services.GetRequiredService<MainViewModel>()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
-            // Resolve directly inside the property setter
-            singleView.MainView = new MainView
+            collection.AddTransient<Views.Browser.MainView>();
+
+            Services = collection.BuildServiceProvider();
+            
+            singleView.MainView = new Views.Browser.MainView
             {
                 DataContext = Services.GetRequiredService<MainViewModel>()
             };
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime activity)
         {
-            activity.MainViewFactory = () => new MainView
+            collection.AddTransient<Views.Mobile.MainView>();
+
+            Services = collection.BuildServiceProvider();
+
+            activity.MainViewFactory = () => new Views.Mobile.MainView
             {
                 DataContext = Services.GetRequiredService<MainViewModel>()
             };
@@ -59,4 +66,5 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+#pragma warning restore CA1416
 }

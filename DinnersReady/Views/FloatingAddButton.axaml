@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DinnersReady.Views.FloatingAddButton"
+             x:DataType="vm:MainViewModel">
+    <Button Command="{Binding OpenAddFormCommand}"
+            VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+            Width="56" Height="56" Margin="0,0,16,64"
+            CornerRadius="48">
+        <ic:FluentIcon Icon="Add"/>
+    </Button>
+</UserControl>

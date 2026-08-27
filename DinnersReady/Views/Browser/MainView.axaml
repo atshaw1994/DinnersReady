@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             xmlns:views="using:DinnersReady.Views"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="800"
+             x:Class="DinnersReady.Views.Browser.MainView"
+             x:DataType="vm:MainViewModel">
+    <!-- DESIGN-TIME DATA CONTEXT -->
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <!-- MAIN CONTENT VIEW -->
+        <Grid>
+            <!-- Embed Tab Control -->
+            <views:MainTabControlView />
+
+            <!-- Floating Add Button -->
+            <views:FloatingAddButton />
+        </Grid>
+
+        <!-- OVERLAY ADD FORM -->
+        <views:AddIngredientOverlayView />
+    </Grid>
+</UserControl>

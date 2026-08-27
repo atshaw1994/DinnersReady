@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
-namespace DinnersReady.Views;
+namespace DinnersReady.Views.Browser;
 
 [SupportedOSPlatform("browser")]
 public partial class MainView : UserControl
