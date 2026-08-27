@@ -1,4 +1,4 @@
-# DinnersReady
+# <img src="Assets/DinnersReady.ico" alt="Icon" width="32"/> DinnersReady
 
 DinnersReady is a cross-platform kitchen inventory app built with [Avalonia UI](https://avaloniaui.net/) and .NET, designed to help you track pantry, fridge, and freezer ingredients so you always know what's on hand for your next meal.
 
