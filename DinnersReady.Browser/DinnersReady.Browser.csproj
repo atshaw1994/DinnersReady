@@ -7,6 +7,12 @@
     <Nullable>enable</Nullable>
 	<WasmBuildNative>true</WasmBuildNative>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="wwwroot\favicon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" />
