@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             xmlns:models="using:DinnersReady.Models"
+             x:Class="DinnersReady.Views.AiRecipeGenerator"
+             x:DataType="vm:RecipeGeneratorViewModel">
+    <StackPanel Margin="20" Spacing="15">
+        <Button Content="Generate Recipe" 
+                Command="{Binding GenerateRecipeCommand}"
+                Click="DirectButton_Click"
+                Padding="16" 
+                HorizontalAlignment="Stretch" 
+                HorizontalContentAlignment="Center"/>
+
+        <ProgressBar Height="4" IsIndeterminate="True" IsVisible="{Binding IsGenerating}" Width="200"/>
+
+        <ContentControl Content="{Binding CurrentRecipe}" IsVisible="{Binding CurrentRecipe, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate DataType="models:GeneratedRecipe">
+                    <StackPanel Spacing="10">
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Title}"/>
+                        <TextBlock FontStyle="Italic" Text="{Binding Description}"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{Binding PrepTimeMinutes, StringFormat='Prep: {0} mins'}"/>
+                            <TextBlock Text="{Binding CookTimeMinutes, StringFormat='Cook: {0} mins'}"/>
+                        </StackPanel>
+
+                        <TextBlock FontWeight="Bold" Margin="0,10,0,0" Text="Steps:"/>
+                        <ItemsControl ItemsSource="{Binding Instructions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="0,2" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+    </StackPanel>
+</UserControl>

@@ -3,8 +3,13 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DinnersReady.Services;
 using DinnersReady.ViewModels;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using OpenAI;
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Net.Http;
 
 namespace DinnersReady;
 
@@ -18,25 +23,39 @@ public partial class App : Application
 #endif
     }
 
-    public System.IServiceProvider? Services { get; private set; }
+    public IServiceProvider? Services { get; private set; }
 
 #pragma warning disable CA1416 // Validate platform compatibility
     public override void OnFrameworkInitializationCompleted()
     {
-        var collection = new ServiceCollection();
+        var services = new ServiceCollection();
+        var apiKey = "ENTER_GOOGLE_API_KEY";
+        // Create an HttpClient with Google's required header
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
+
+        var clientOptions = new OpenAIClientOptions
+        {
+            Endpoint = new Uri("https://generativelanguage.googleapis.com/v1beta/openai"),
+            Transport = new HttpClientPipelineTransport(httpClient)
+        };
 
         // Register Services & ViewModels
-        collection.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
-        collection.AddSingleton<IngredientStore>();
-        collection.AddTransient<MainViewModel>();
+        services.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
+        services.AddSingleton<IngredientStore>();
+        services.AddSingleton<IChatClient>(sp => new GeminiChatClient(apiKey, "gemini-3.6-flash"));
+
+        services.AddTransient<RecipeGeneratorService>();
+        services.AddTransient<RecipeGeneratorViewModel>();
+        services.AddTransient<MainViewModel>();
 
         // Register Views for each platform profile
-        collection.AddTransient<Views.FullSize.MainWindow>(); // Desktop Window Shell
-        collection.AddTransient<Views.Web.MainView>();     // Browser UserControl
-        collection.AddTransient<Views.Mobile.MainView>();     // Mobile UserControl
+        services.AddTransient<Views.FullSize.MainWindow>(); // Desktop Window Shell
+        services.AddTransient<Views.Web.MainView>();     // Browser UserControl
+        services.AddTransient<Views.Mobile.MainView>();     // Mobile UserControl
 
         // Build container once
-        Services = collection.BuildServiceProvider();
+        Services = services.BuildServiceProvider();
 
         var mainVm = Services.GetRequiredService<MainViewModel>();
 

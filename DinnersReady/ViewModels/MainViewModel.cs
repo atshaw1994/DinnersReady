@@ -35,6 +35,8 @@ public partial class MainViewModel : ObservableValidator
                                !string.IsNullOrWhiteSpace(NewItemName) &&
                                !string.IsNullOrWhiteSpace(NewItemCategory);
 
+    public RecipeGeneratorViewModel? RecipeGeneratorViewModel { get; }
+
     #region Properties
     [ObservableProperty] public partial ObservableCollection<Ingredient> PantryItems { get; set; } = [];
 
@@ -173,6 +175,7 @@ public partial class MainViewModel : ObservableValidator
         if (Design.IsDesignMode)
         {
             _ingredientService = null;
+            RecipeGeneratorViewModel = new RecipeGeneratorViewModel(null!, null!);
 
             PantryItems =
             [
@@ -190,9 +193,10 @@ public partial class MainViewModel : ObservableValidator
         }
     }
 
-    public MainViewModel(IngredientStore ingredientStore)
+    public MainViewModel(IngredientStore ingredientStore, RecipeGeneratorViewModel recipeGeneratorViewModel)
     {
         _ingredientService = ingredientStore;
+        RecipeGeneratorViewModel = recipeGeneratorViewModel;
 
         // Initialize collections so bindings don't fail null checks
         IngredientLibrary = [];

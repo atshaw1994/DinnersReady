@@ -21,7 +21,8 @@
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
                     <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
-                    <Button Content="Generate" Margin="16" Padding="16" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                    <!-- The view that displays progress and results -->
+                    <sharedviews:AiRecipeGenerator DataContext="{Binding RecipeGeneratorViewModel}" />
                 </StackPanel>
                 <Border Background="LightGray" Padding="16" IsVisible="False">
                     <TextBlock Text="Generated content will appear here." />
