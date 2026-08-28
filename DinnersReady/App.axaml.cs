@@ -29,8 +29,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
-        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY") ?? "YOUR_GEMINI_API_KEY";
-        System.Console.WriteLine($"GEMINI_API_KEY: {apiKey}");
+        var apiKey = ConfigService.GetGeminiApiKey();
         // Create an HttpClient with Google's required header
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);

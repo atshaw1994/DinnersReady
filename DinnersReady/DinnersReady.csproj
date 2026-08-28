@@ -34,6 +34,8 @@
 
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
+		<None Remove="appsettings.json" />
+		<AvaloniaResource Include="appsettings.json" />
 		<EmbeddedResource Include="Assets\IngredientsLibrary.json" />
 	</ItemGroup>
 
