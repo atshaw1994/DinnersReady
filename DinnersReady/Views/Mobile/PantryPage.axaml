@@ -14,7 +14,7 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <ScrollViewer Margin="16">
+    <ScrollViewer>
         <!-- Message if Pantry is empty -->
         <StackPanel Spacing="16">
             <TextBlock Text="No pantry items added yet." 

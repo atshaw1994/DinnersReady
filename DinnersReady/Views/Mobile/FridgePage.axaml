@@ -15,7 +15,7 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <ScrollViewer Margin="16">
+    <ScrollViewer>
         <StackPanel Spacing="16">
             <!-- Message if Fridge is empty -->
             <TextBlock Text="No fridge items added yet." 

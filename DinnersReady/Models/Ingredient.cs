@@ -37,4 +37,5 @@ public partial class Ingredient : ObservableObject
 
     [ObservableProperty] public partial bool IsEditing { get; set; } = false;
 
+    [ObservableProperty] public partial bool IsSlidLeft { get; set; } = false;
 }

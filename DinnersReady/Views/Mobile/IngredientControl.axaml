@@ -10,45 +10,71 @@
              x:DataType="models:Ingredient">
     <!-- DESIGN-TIME INGREDIENT MOCK -->
     <Design.DataContext>
-        <models:Ingredient Id="cumin-ground" Name="Ground Cumin" Category="Spices" Quantity="50" Unit="g" />
+        <models:Ingredient Id="cumin-ground"
+                           Name="Ground Cumin"
+                           Category="Spices"
+                           Quantity="50"
+                           Unit="g" />
     </Design.DataContext>
+    
+    <Grid ClipToBounds="True">
+        <!-- Delete Button (Revealed Behind) -->
+        <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteItemCommand}"
+                CommandParameter="{Binding}"
+                Background="Red"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Padding="8" Width="64" CornerRadius="0">
+            <ic:FluentIcon Icon="Delete" Foreground="White"/>
+        </Button>
 
-    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-            CornerRadius="8" 
-            Padding="12" 
-            Margin="0,0,0,8">
-        <Grid ColumnDefinitions="*, Auto">
-            <!-- Ingredient Details -->
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock Text="{Binding Category}" Opacity="0.7" FontSize="12"/>
-                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
-                    <TextBlock FontSize="12" Opacity="0.7">
-                        <Run Text="{Binding Quantity}"/>
-                        <Run Text="{Binding UnitDisplay}"/>
-                    </TextBlock>
-                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
-                    <TextBlock FontSize="12" Opacity="0.7">
-                        <Run Text="Exp: "/>
-                        <Run Text="{Binding ExpiryDate, StringFormat='{}{0:MM/dd/yy}'}"/>
-                    </TextBlock>
+        <!-- Sliding Main Content -->
+        <Border x:Name="MainBorder"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Classes.open="{Binding IsSlidLeft}"
+                Padding="12">
+            <Border.Transitions>
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" 
+                                                   Duration="0:0:0.25" 
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Border.Transitions>
+
+            <Border.Styles>
+                <Style Selector="Border#MainBorder">
+                    <Setter Property="RenderTransform" Value="translateX(0px)" />
+                </Style>
+                <Style Selector="Border#MainBorder.open">
+                    <Setter Property="RenderTransform" Value="translateX(-56px)" />
+                </Style>
+            </Border.Styles>
+
+            <Border.GestureRecognizers>
+                <SwipeGestureRecognizer CanHorizontallySwipe="True" Threshold="10" />
+            </Border.GestureRecognizers>
+
+            <Grid ColumnDefinitions="*, Auto">            
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="{Binding Category}" Opacity="0.7" FontSize="12"/>
+                        <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
+                        <TextBlock FontSize="12" Opacity="0.7">
+                            <Run Text="{Binding Quantity}"/>
+                            <Run Text="{Binding UnitDisplay}"/>
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
 
-            <!-- Edit & Delete Actions -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                 <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).Mobile_EditItemCommand}"
                         CommandParameter="{Binding}"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
                         Padding="8" Width="36" Height="36" CornerRadius="18">
                     <ic:FluentIcon Icon="Edit"/>
                 </Button>
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteItemCommand}"
-                        CommandParameter="{Binding}"
-                        Padding="8" Width="36" Height="36" CornerRadius="18">
-                    <ic:FluentIcon Icon="Delete"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-    </Border>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

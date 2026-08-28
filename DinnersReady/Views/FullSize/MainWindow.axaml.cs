@@ -5,7 +5,6 @@ namespace DinnersReady.Views.FullSize;
 
 [SupportedOSPlatform("windows")]
 [SupportedOSPlatform("macos")]
-[SupportedOSPlatform("browser")]
 public partial class MainWindow : Window
 {
     public MainWindow()

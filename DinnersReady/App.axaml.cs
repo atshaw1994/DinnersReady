@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DinnersReady.Services;
 using DinnersReady.ViewModels;
-using DinnersReady.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -26,40 +25,47 @@ public partial class App : Application
     {
         var collection = new ServiceCollection();
 
+        // Register Services & ViewModels
         collection.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
         collection.AddSingleton<IngredientStore>();
         collection.AddTransient<MainViewModel>();
 
+        // Register Views for each platform profile
+        collection.AddTransient<Views.FullSize.MainWindow>(); // Desktop Window Shell
+        collection.AddTransient<Views.Web.MainView>();     // Browser UserControl
+        collection.AddTransient<Views.Mobile.MainView>();     // Mobile UserControl
+
+        // Build container once
+        Services = collection.BuildServiceProvider();
+
+        var mainVm = Services.GetRequiredService<MainViewModel>();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            collection.AddTransient<Views.FullSize.MainWindow>();
-
-            Services = collection.BuildServiceProvider();
+            // Desktop (Windows/macOS/Linux)
             desktop.MainWindow = new Views.FullSize.MainWindow
             {
-                DataContext = Services.GetRequiredService<MainViewModel>()
+                DataContext = mainVm
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
-            collection.AddTransient<Views.FullSize.MainWindow>();
-
-            Services = collection.BuildServiceProvider();
-            singleView.MainView = new Views.FullSize.MainWindow
+            if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
             {
-                DataContext = Services.GetRequiredService<MainViewModel>()
-            };
-        }
-        else if (ApplicationLifetime is IActivityApplicationLifetime activity)
-        {
-            collection.AddTransient<Views.Mobile.MainView>();
-
-            Services = collection.BuildServiceProvider();
-
-            activity.MainViewFactory = () => new Views.Mobile.MainView
+                // Mobile UI (Android & iOS)
+                singleView.MainView = new Views.Mobile.MainView
+                {
+                    DataContext = mainVm
+                };
+            }
+            else
             {
-                DataContext = Services.GetRequiredService<MainViewModel>()
-            };
+                // Web / Browser UI (WASM)
+                singleView.MainView = new Views.Web.MainView
+                {
+                    DataContext = mainVm
+                };
+            }
         }
 
         base.OnFrameworkInitializationCompleted();

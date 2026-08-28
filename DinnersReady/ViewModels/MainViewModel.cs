@@ -8,6 +8,7 @@ using DinnersReady.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -44,11 +45,13 @@ public partial class MainViewModel : ObservableValidator
     [ObservableProperty]
     [Required(ErrorMessage = "Ingredient name is required")]
     [MinLength(1, ErrorMessage = "Name cannot be empty")]
+    [NotifyCanExecuteChangedFor(nameof(SaveItemCommand))]
     public partial string NewItemName { get; set; } = string.Empty;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Category is required")]
     [MinLength(1, ErrorMessage = "Category cannot be empty")]
+    [NotifyCanExecuteChangedFor(nameof(SaveItemCommand))]
     public partial string NewItemCategory { get; set; } = string.Empty;
 
     partial void OnNewItemNameChanged(string value)
@@ -84,7 +87,11 @@ public partial class MainViewModel : ObservableValidator
 
     #region Commands
     [RelayCommand]
-    private void OpenAddForm() => IsAddingItem = true;
+    private void OpenAddForm()
+    {
+        ValidateAllProperties();
+        IsAddingItem = true;
+    }
 
     [RelayCommand]
     private void CloseAddForm() => IsAddingItem = false;
@@ -192,6 +199,9 @@ public partial class MainViewModel : ObservableValidator
         IngredientSuggestions = [];
         PantryItems = [];
         FridgeItems = [];
+
+        // Re-evaluate SaveItem command whenever validation errors change
+        ErrorsChanged += (s, e) => SaveItemCommand.NotifyCanExecuteChanged();
 
         // Defer all loading until the WASM UI thread finishes its initial layout pass
         Dispatcher.UIThread.Post(async () => await InitializeAsync(), DispatcherPriority.Background);
