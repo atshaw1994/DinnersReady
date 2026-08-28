@@ -29,7 +29,8 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
-        var apiKey = "ENTER_GOOGLE_API_KEY";
+        var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY") ?? "YOUR_GEMINI_API_KEY";
+        System.Console.WriteLine($"GEMINI_API_KEY: {apiKey}");
         // Create an HttpClient with Google's required header
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
@@ -51,7 +52,7 @@ public partial class App : Application
 
         // Register Views for each platform profile
         services.AddTransient<Views.FullSize.MainWindow>(); // Desktop Window Shell
-        services.AddTransient<Views.Web.MainView>();     // Browser UserControl
+        services.AddTransient<Views.Web.MainView>();        // Browser UserControl
         services.AddTransient<Views.Mobile.MainView>();     // Mobile UserControl
 
         // Build container once
