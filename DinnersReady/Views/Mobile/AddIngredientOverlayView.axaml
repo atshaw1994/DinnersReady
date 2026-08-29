@@ -8,7 +8,6 @@
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="DinnersReady.Views.Mobile.AddIngredientOverlayView"
              x:DataType="vm:MainViewModel">
-
     <Design.DataContext>
         <vm:MainViewModel IsAddingItem="True"/>
     </Design.DataContext>

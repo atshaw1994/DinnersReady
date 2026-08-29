@@ -47,6 +47,10 @@ public partial class App : Application
 
         services.AddTransient<RecipeGeneratorService>();
         services.AddTransient<RecipeGeneratorViewModel>();
+
+        // Register platform-specific Share Service
+        services.AddShareService();
+
         services.AddTransient<MainViewModel>();
 
         // Register Views for each platform profile

@@ -175,13 +175,13 @@ public partial class MainViewModel : ObservableValidator
         if (Design.IsDesignMode)
         {
             _ingredientService = null;
-            RecipeGeneratorViewModel = new RecipeGeneratorViewModel(null!, null!);
+            RecipeGeneratorViewModel = new RecipeGeneratorViewModel(null!, null!, null!, null!);
 
             PantryItems =
             [
                 new Ingredient { Id = "cumin-ground", Name = "Ground Cumin", Category = "Spices", Quantity = 50, Unit = "g" },
-            new Ingredient { Id = "jasmine-rice", Name = "Jasmine Rice", Category = "Grains", Quantity = 1000, Unit = "g" },
-            new Ingredient { Id = "olive-oil", Name = "Olive Oil", Category = "Oils", Quantity = 500, Unit = "ml" }
+                new Ingredient { Id = "jasmine-rice", Name = "Jasmine Rice", Category = "Grains", Quantity = 1000, Unit = "g" },
+                new Ingredient { Id = "olive-oil", Name = "Olive Oil", Category = "Oils", Quantity = 500, Unit = "ml" }
             ];
 
             FridgeItems =
