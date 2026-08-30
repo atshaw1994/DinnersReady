@@ -1,20 +1,12 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using DinnersReady.ViewModels;
 
-namespace DinnersReady.Views
+namespace DinnersReady.Views;
+
+public partial class AiRecipeGenerator : UserControl
 {
-    public partial class AiRecipeGenerator : UserControl
+    public AiRecipeGenerator()
     {
-        public AiRecipeGenerator()
-        {
-            InitializeComponent();
-            System.Diagnostics.Debug.WriteLine($"AiRecipeGenerator DataContext: {DataContext?.GetType().Name ?? "NULL"}");
-        }
-
-        private void DirectButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine($"AiRecipeGenerator DataContext: {DataContext?.GetType().Name ?? "NULL"}");
-        }
+        InitializeComponent();
     }
 }

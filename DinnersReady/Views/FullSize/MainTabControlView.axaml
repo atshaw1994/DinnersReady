@@ -2,12 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
-             xmlns:fsviews="using:DinnersReady.Views.FullSize"
              xmlns:sharedviews="using:DinnersReady.Views"
-             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             xmlns:fsviews="using:DinnersReady.Views.FullSize"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="768"
              x:Class="DinnersReady.Views.FullSize.MainTabControlView"
              x:DataType="vm:MainViewModel">
 
@@ -20,22 +18,21 @@
         <TabbedPage.Styles>
             <StyleInclude Source="/Assets/TabbedPageStyles.axaml" />
         </TabbedPage.Styles>
+
+        <!-- HOME TAB -->
         <ContentPage>
             <ContentPage.Header>
                 <TextBlock Classes="headerText" Text="Home"/>
             </ContentPage.Header>
+
             <Grid>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
                     <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
                                    
                     <!-- The view that displays progress and results -->
-                    <sharedviews:AiRecipeGenerator DataContext="{Binding RecipeGeneratorViewModel}" />
+                    <sharedviews:AiRecipeGenerator Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
                 </StackPanel>
-
-                <Border Background="LightGray" Padding="16" IsVisible="False">
-                    <TextBlock Text="Generated content will appear here." />
-                </Border>
             </Grid>
         </ContentPage>
 
@@ -45,37 +42,7 @@
                 <TextBlock Classes="headerText" Text="Pantry"/>
             </ContentPage.Header>
 
-            <Grid RowDefinitions="*,Auto" Margin="16">
-                <ScrollViewer>
-                    <!-- Message if Pantry is empty -->
-                    <StackPanel Spacing="16">
-                        <TextBlock Text="No pantry items added yet." 
-                                   IsVisible="{Binding !PantryItems.Count}" 
-                                   Opacity="0.6" 
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,32,0,0"/>
-
-                        <!-- List of Pantry Items -->
-                        <ItemsControl ItemsSource="{Binding PantryItems}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:Ingredient">
-                                    <fsviews:IngredientControl />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <Button Grid.Row="1"
-                        Margin="16" 
-                        Padding="16"
-                        Width="64" Height="64"
-                        CornerRadius="32"
-                        HorizontalAlignment="Center" 
-                        HorizontalContentAlignment="Center">
-                        <ic:FluentIcon Icon="Add" IconVariant="Filled"/>
-                </Button>
-            </Grid>
+            <fsviews:PantryPage />
         </ContentPage>
 
         <!-- FRIDGE TAB -->
@@ -84,37 +51,7 @@
                 <TextBlock Classes="headerText" Text="Fridge"/>
             </ContentPage.Header>
             
-            <Grid RowDefinitions="*,Auto" Margin="16">
-                <ScrollViewer>
-                    <!-- Message if fridge is empty -->
-                    <StackPanel Spacing="16">
-                        <TextBlock Text="No fridge items added yet." 
-                                   IsVisible="{Binding !FridgeItems.Count}" 
-                                   Opacity="0.6" 
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,32,0,0"/>
-
-                        <!-- List of Pantry Items -->
-                        <ItemsControl ItemsSource="{Binding FridgeItems}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:Ingredient">
-                                    <fsviews:IngredientControl />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <Button Grid.Row="1"
-                        Margin="16" 
-                        Padding="16"
-                        Width="64" Height="64"
-                        CornerRadius="32"
-                        HorizontalAlignment="Center" 
-                        HorizontalContentAlignment="Center">
-                        <ic:FluentIcon Icon="Add" IconVariant="Filled"/>
-                </Button>
-            </Grid>
+            <fsviews:FridgePage />
         </ContentPage>
     </TabbedPage>
 </UserControl>

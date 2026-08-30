@@ -42,11 +42,15 @@ public partial class App : Application
 
         // Register Services & ViewModels
         services.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
-        services.AddSingleton<IngredientStore>();
+        services.AddTransient<IngredientStore>();
+        services.AddSingleton<IRecipeStoreRepository, RecipeStoreRepository>();
+        services.AddTransient<RecipeStore>();
         services.AddSingleton<IChatClient>(sp => new GeminiChatClient(apiKey, "gemini-3.6-flash"));
 
-        services.AddTransient<RecipeGeneratorService>();
-        services.AddTransient<RecipeGeneratorViewModel>();
+        services.AddSingleton<RecipeGeneratorService>();
+        services.AddTransient<RecipeGeneratorContext>();
+        services.AddSingleton<RecipeGeneratorViewModel>();
+        services.AddSingleton<MainServicesContext>();
 
         // Register platform-specific Share Service
         services.AddShareService();
@@ -75,19 +79,19 @@ public partial class App : Application
         {
             if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
             {
-                // Mobile UI (Android & iOS)
-                singleView.MainView = new Views.Mobile.MainView
+                var mobileView = new Views.Mobile.MainView
                 {
                     DataContext = mainVm
                 };
+                singleView.MainView = mobileView;
             }
             else
             {
-                // Web / Browser UI (WASM)
-                singleView.MainView = new Views.Web.MainView
+                var webView = new Views.Web.MainView
                 {
                     DataContext = mainVm
                 };
+                singleView.MainView = webView;
             }
         }
 

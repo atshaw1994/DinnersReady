@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:vm="using:DinnersReady.ViewModels"
+             xmlns:models="using:DinnersReady.Models"
+             xmlns:fsviews="using:DinnersReady.Views.FullSize"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DinnersReady.Views.FullSize.FridgePage"
+             x:DataType="vm:MainViewModel">
+    <Grid RowDefinitions="*,Auto" Margin="16,16,16,0">
+        <ScrollViewer>
+            <!-- Message if fridge is empty -->
+            <StackPanel Spacing="16">
+                <TextBlock Text="No fridge items added yet." 
+                            IsVisible="{Binding !FridgeItems.Count}" 
+                            Opacity="0.6" 
+                            HorizontalAlignment="Center" 
+                            Margin="0,32,0,0"/>
+
+                <!-- List of Pantry Items -->
+                <ItemsControl ItemsSource="{Binding FridgeItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:Ingredient">
+                            <fsviews:IngredientControl />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="1"
+                Margin="16" Padding="16"
+                Width="64" Height="64"
+                CornerRadius="32"
+                Command="{Binding OpenAddFormCommand}"
+                HorizontalAlignment="Center" 
+                HorizontalContentAlignment="Center">
+                <ic:FluentIcon Icon="Add" IconVariant="Filled"/>
+        </Button>
+    </Grid>
+</UserControl>

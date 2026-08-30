@@ -10,14 +10,32 @@ using System.Threading.Tasks;
 
 namespace DinnersReady.ViewModels;
 
-public partial class RecipeGeneratorViewModel(
-    RecipeGeneratorService recipeService, 
-    IngredientStore inventoryService, 
-    RecipeStore recipeStore,
-    IShareService shareService) : ObservableObject
+public record RecipeGeneratorContext(
+    RecipeGeneratorService RecipeService,
+    IngredientStore IngredientService,
+    RecipeStore RecipeStore,
+    IShareService ShareService
+);
+
+public partial class RecipeGeneratorViewModel : ObservableObject
 {
+    public RecipeGeneratorContext Services { get; }
+
     // Parameterless constructor strictly for Avalonia Previewer / Design Time
-    public RecipeGeneratorViewModel() : this(null!, null!, null!, null!) { }
+    public RecipeGeneratorViewModel()
+    {
+        Services = new RecipeGeneratorContext(
+            null!,
+            null!,
+            null!,
+            null!
+        );
+    }
+
+    public RecipeGeneratorViewModel(RecipeGeneratorContext services)
+    {
+        Services = services ?? throw new ArgumentNullException(nameof(services));
+    }
 
     [ObservableProperty] public partial bool IsGenerating { get; set; } = false;
 
@@ -29,9 +47,9 @@ public partial class RecipeGeneratorViewModel(
         IsGenerating = true;
         try
         {
-            var ingredients = await inventoryService.GetIngredientsAsync();
+            var ingredients = await Services.IngredientService.GetIngredientsAsync();
             var ingredientNames = ingredients.Select(i => i.Name);
-            CurrentRecipe = await recipeService.GenerateRecipeAsync(ingredientNames, ct);
+            CurrentRecipe = await Services.RecipeService.GenerateRecipeAsync(ingredientNames, ct);
         }
         catch (System.ClientModel.ClientResultException ex)
         {
@@ -55,13 +73,13 @@ public partial class RecipeGeneratorViewModel(
     public async Task SaveRecipe(CancellationToken ct) 
     {
         if (CurrentRecipe is not null)
-            await recipeStore.AddRecipeAsync(CurrentRecipe);
+            await Services.RecipeStore.AddRecipeAsync(CurrentRecipe);
     }
 
     [RelayCommand]
     public async Task ShareRecipe()
     {
-        if (CurrentRecipe is null || shareService is null) return;
+        if (CurrentRecipe is null || Services.ShareService is null) return;
 
         var sb = new StringBuilder();
         sb.AppendLine(CurrentRecipe.Title);
@@ -97,7 +115,7 @@ public partial class RecipeGeneratorViewModel(
             }
         }
 
-        await shareService.ShareTextAsync(CurrentRecipe.Title ?? "Recipe", sb.ToString());
+        await Services.ShareService.ShareTextAsync(CurrentRecipe.Title ?? "Recipe", sb.ToString());
     }
 
     [RelayCommand]

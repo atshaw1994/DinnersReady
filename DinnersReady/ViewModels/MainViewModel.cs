@@ -8,7 +8,6 @@ using DinnersReady.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -17,16 +16,23 @@ using System.Threading.Tasks;
 
 namespace DinnersReady.ViewModels;
 
+public record MainServicesContext(
+    IngredientStore IngredientStore,
+    RecipeStore RecipeStore,
+    RecipeGeneratorViewModel RecipeGeneratorViewModel
+);
+
 public partial class MainViewModel : ObservableValidator
 {
+    public MainServicesContext Services { get; }
+
+    #region Fields
     // Cache JsonSerializerOptions instance to improve performance and satisfy CA1869
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         TypeInfoResolver = DinnersReadyJsonContext.Default
     };
-
-    private readonly IngredientStore? _ingredientService;
 
     // Full library loaded from JSON
     public List<Ingredient> IngredientLibrary { get; private set; } = [];
@@ -35,7 +41,9 @@ public partial class MainViewModel : ObservableValidator
                                !string.IsNullOrWhiteSpace(NewItemName) &&
                                !string.IsNullOrWhiteSpace(NewItemCategory);
 
-    public RecipeGeneratorViewModel? RecipeGeneratorViewModel { get; }
+    // Direct getter for cleaner XAML binding
+    public RecipeGeneratorViewModel RecipeGenerator => Services.RecipeGeneratorViewModel;
+    #endregion
 
     #region Properties
     [ObservableProperty] public partial ObservableCollection<Ingredient> PantryItems { get; set; } = [];
@@ -117,7 +125,7 @@ public partial class MainViewModel : ObservableValidator
             Location = (StorageLocation)LocationIndex
         };
 
-        await _ingredientService!.AddIngredientAsync(newItem);
+        await Services.IngredientStore!.AddIngredientAsync(newItem);
 
         await LoadInventoryAsync();
         IsAddingItem = false;
@@ -148,8 +156,8 @@ public partial class MainViewModel : ObservableValidator
 
         if (ingredient.IsEditing)
         {
-            await _ingredientService!.RemoveIngredientAsync(ingredient);
-            await _ingredientService!.AddIngredientAsync(ingredient);
+            await Services.IngredientStore!.RemoveIngredientAsync(ingredient);
+            await Services.IngredientStore!.AddIngredientAsync(ingredient);
             await LoadInventoryAsync();
             ingredient.IsEditing = false;
         }
@@ -164,7 +172,7 @@ public partial class MainViewModel : ObservableValidator
     {
         if (item == null) return;
 
-        await _ingredientService!.RemoveIngredientAsync(item);
+        await Services.IngredientStore!.RemoveIngredientAsync(item);
         await LoadInventoryAsync();
     }
     #endregion
@@ -174,8 +182,11 @@ public partial class MainViewModel : ObservableValidator
     {
         if (Design.IsDesignMode)
         {
-            _ingredientService = null;
-            RecipeGeneratorViewModel = new RecipeGeneratorViewModel(null!, null!, null!, null!);
+            Services = new MainServicesContext(
+                null!,
+                null!,
+                new RecipeGeneratorViewModel()
+            );
 
             PantryItems =
             [
@@ -191,12 +202,15 @@ public partial class MainViewModel : ObservableValidator
                 new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
             ]; 
         }
+        else
+        {
+            Services = null!;
+        }
     }
 
-    public MainViewModel(IngredientStore ingredientStore, RecipeGeneratorViewModel recipeGeneratorViewModel)
+    public MainViewModel(MainServicesContext services)
     {
-        _ingredientService = ingredientStore;
-        RecipeGeneratorViewModel = recipeGeneratorViewModel;
+        Services = services;
 
         // Initialize collections so bindings don't fail null checks
         IngredientLibrary = [];
@@ -263,7 +277,7 @@ public partial class MainViewModel : ObservableValidator
 
     public async Task LoadInventoryAsync()
     {
-        var allItems = await _ingredientService!.GetIngredientsAsync();
+        var allItems = await Services.IngredientStore.GetIngredientsAsync();
 
         // Clear and repopulate on the UI thread safely
         PantryItems.Clear();
@@ -274,5 +288,4 @@ public partial class MainViewModel : ObservableValidator
         foreach (var item in allItems.Where(i => i.Location == StorageLocation.Fridge))
             FridgeItems.Add(item);
     }
-
 }
