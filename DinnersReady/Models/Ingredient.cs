@@ -36,6 +36,6 @@ public partial class Ingredient : ObservableObject
     public StorageLocation Location { get; set; } = StorageLocation.Fridge;
 
     [ObservableProperty] public partial bool IsEditing { get; set; } = false;
-
     [ObservableProperty] public partial bool IsSlidLeft { get; set; } = false;
+    [ObservableProperty] public partial bool IsSlidRight { get; set; } = false;
 }

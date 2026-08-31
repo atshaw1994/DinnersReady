@@ -19,13 +19,31 @@ public partial class IngredientControl : UserControl
         if (DataContext is not Ingredient item) return;
 
         // Left swipe opens (-X velocity), Right swipe closes (+X velocity)
-        if (e.Velocity.X < -100 && item.IsSlidLeft)
+        if (e.Velocity.X > -100)
         {
-            item.IsSlidLeft = false;
+            if (item.IsSlidRight)
+            {
+                item.IsSlidRight = false;
+                item.IsSlidLeft = false;
+            }
+            else if (!item.IsSlidLeft)
+            {
+                item.IsSlidLeft = true;
+                item.IsSlidRight = false;
+            }
         }
-        else if (e.Velocity.X > 100 && !item.IsSlidLeft)
+        else if (e.Velocity.X < 100)
         {
-            item.IsSlidLeft = true;
+            if (item.IsSlidLeft)
+            {
+                item.IsSlidRight = false;
+                item.IsSlidLeft = false;
+            }
+            else if (!item.IsSlidRight)
+            {
+                item.IsSlidRight = true;
+                item.IsSlidLeft = false;
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Browser" />
+    <PackageReference Include="OpenAI" />
   </ItemGroup>
 
   <ItemGroup>

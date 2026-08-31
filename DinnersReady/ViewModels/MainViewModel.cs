@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace DinnersReady.ViewModels;
 public record MainServicesContext(
     IngredientStore IngredientStore,
     RecipeStore RecipeStore,
-    RecipeGeneratorViewModel RecipeGeneratorViewModel
+    RecipeGeneratorViewModel RecipeGeneratorViewModel,
+    IShareService ShareService
 );
 
 public partial class MainViewModel : ObservableValidator
@@ -49,6 +51,8 @@ public partial class MainViewModel : ObservableValidator
     [ObservableProperty] public partial ObservableCollection<Ingredient> PantryItems { get; set; } = [];
 
     [ObservableProperty] public partial ObservableCollection<Ingredient> FridgeItems { get; set; } = [];
+
+    [ObservableProperty] public partial ObservableCollection<GeneratedRecipe> SavedRecipes { get; set; } = [];
 
     [ObservableProperty] public partial ObservableCollection<string> IngredientSuggestions { get; set; } = [];
 
@@ -168,12 +172,62 @@ public partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    private async Task DeleteItemAsync(Ingredient item)
+    private async Task DeleteIngredientAsync(Ingredient item)
     {
         if (item == null) return;
 
         await Services.IngredientStore!.RemoveIngredientAsync(item);
         await LoadInventoryAsync();
+    }
+
+    [RelayCommand]
+    public async Task ShareRecipe(GeneratedRecipe recipe)
+    {
+        if (recipe is null || Services.ShareService is null) return;
+
+        var sb = new StringBuilder();
+        sb.AppendLine(recipe.Title);
+        sb.AppendLine($"Prep: {recipe.PrepTimeDisplay} | Cook: {recipe.CookTimeDisplay}");
+        sb.AppendLine();
+
+        if (recipe.UsedIngredients?.Count > 0)
+        {
+            sb.AppendLine("Ingredients:");
+            foreach (var ing in recipe.UsedIngredients)
+            {
+                sb.AppendLine($"• {ing}");
+            }
+            sb.AppendLine();
+        }
+
+        if (recipe.AdditionalIngredientsNeeded?.Count > 0)
+        {
+            sb.AppendLine("Additional Ingredients Needed:");
+            foreach (var ing in recipe.AdditionalIngredientsNeeded)
+            {
+                sb.AppendLine($"• {ing}");
+            }
+            sb.AppendLine();
+        }
+
+        if (recipe.Instructions?.Count > 0)
+        {
+            sb.AppendLine("Instructions:");
+            foreach (var step in recipe.Instructions)
+            {
+                sb.AppendLine(step);
+            }
+        }
+
+        await Services.ShareService.ShareTextAsync(recipe.Title ?? "Recipe", sb.ToString());
+    }
+
+    [RelayCommand]
+    public async Task DeleteRecipeAsync(GeneratedRecipe recipe)
+    {
+        if (recipe is null) return;
+        await Services.RecipeStore!.RemoveRecipeAsync(recipe);
+        SavedRecipes.Remove(recipe);
     }
     #endregion
 
@@ -185,7 +239,8 @@ public partial class MainViewModel : ObservableValidator
             Services = new MainServicesContext(
                 null!,
                 null!,
-                new RecipeGeneratorViewModel()
+                new RecipeGeneratorViewModel(),
+                null!
             );
 
             PantryItems =
@@ -200,7 +255,12 @@ public partial class MainViewModel : ObservableValidator
                 new Ingredient { Id = "whole-milk", Name = "Whole Milk", Category = "Dairy", Quantity = 1, Unit = "l" },
                 new Ingredient { Id = "cheddar-cheese", Name = "Cheddar Cheese", Category = "Dairy", Quantity = 250, Unit = "g" },
                 new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
-            ]; 
+            ];
+
+            SavedRecipes =
+            [
+                DesignData.GeneratedRecipe_DesignData.CheesyOmelette
+            ];
         }
         else
         {

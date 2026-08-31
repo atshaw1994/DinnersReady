@@ -9,7 +9,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DinnersReady.Views.FullSize.PantryPage"
              x:DataType="vm:MainViewModel">
-    <Grid RowDefinitions="*,Auto" Margin="16,16,16,0">
+    <Grid RowDefinitions="*,Auto">
         <ScrollViewer>
             <!-- Message if Pantry is empty -->
             <StackPanel Spacing="16">

@@ -5,5 +5,6 @@
   <Project Path="DinnersReady.Browser/DinnersReady.Browser.csproj" />
   <Project Path="DinnersReady.Desktop/DinnersReady.Desktop.csproj" />
   <Project Path="DinnersReady.iOS/DinnersReady.iOS.csproj" />
+  <Project Path="DinnersReady.Tests/DinnersReady.Tests.csproj" Id="552d6b97-7c1d-4f38-aa65-8397674eb3a4" />
   <Project Path="DinnersReady/DinnersReady.csproj" />
 </Solution>

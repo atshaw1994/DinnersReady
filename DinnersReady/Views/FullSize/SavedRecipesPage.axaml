@@ -7,23 +7,23 @@
              xmlns:models="using:DinnersReady.Models"
              xmlns:fsviews="using:DinnersReady.Views.FullSize"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="DinnersReady.Views.FullSize.FridgePage"
+             x:Class="DinnersReady.Views.FullSize.SavedRecipesPage"
              x:DataType="vm:MainViewModel">
     <Grid RowDefinitions="*,Auto">
         <ScrollViewer>
-            <!-- Message if fridge is empty -->
+            <!-- Message if saved recipes is empty -->
             <StackPanel Spacing="16">
-                <TextBlock Text="No fridge items added yet." 
-                            IsVisible="{Binding !FridgeItems.Count}" 
-                            Opacity="0.6" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,32,0,0"/>
+                <TextBlock Text="No saved recipes added yet." 
+                           IsVisible="{Binding !SavedRecipes.Count}" 
+                           Opacity="0.6" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,32,0,0"/>
 
-                <!-- List of Pantry Items -->
-                <ItemsControl ItemsSource="{Binding FridgeItems}">
+                <!-- List of Saved Recipes -->
+                <ItemsControl ItemsSource="{Binding SavedRecipes}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:Ingredient">
-                            <fsviews:IngredientControl />
+                        <DataTemplate x:DataType="models:GeneratedRecipe">
+                            <fsviews:SavedRecipeControl />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

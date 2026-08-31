@@ -5,7 +5,7 @@
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
              xmlns:models="using:DinnersReady.Models"
-             mc:Ignorable="d" d:DesignWidth="800"
+             mc:Ignorable="d" d:DesignWidth="400"
              x:Class="DinnersReady.Views.FullSize.IngredientControl"
              x:DataType="models:Ingredient">
     <!-- DESIGN-TIME INGREDIENT MOCK -->
@@ -19,9 +19,9 @@
     </Design.DataContext>
 
     <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-            CornerRadius="8" 
-            Padding="12" 
-            Margin="0,0,0,8">
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="12" >
         <Grid>
             <Grid ColumnDefinitions="*, Auto" IsVisible="{Binding !IsEditing}">
                 <!-- Ingredient Details -->
@@ -47,11 +47,23 @@
                     <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).ToggleEditIngredientCommand}"
                             CommandParameter="{Binding}"
                             Padding="8" Width="36" Height="36" CornerRadius="18">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+                        </Button.Styles>
                         <ic:FluentIcon Icon="Edit"/>
                     </Button>
-                    <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteItemCommand}"
+                    <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteIngredientCommand}"
                             CommandParameter="{Binding}"
                             Padding="8" Width="36" Height="36" CornerRadius="18">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Red" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+                        </Button.Styles>
                         <ic:FluentIcon Icon="Delete"/>
                     </Button>
                 </StackPanel>

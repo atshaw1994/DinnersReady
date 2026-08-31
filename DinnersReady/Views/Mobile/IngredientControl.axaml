@@ -19,19 +19,62 @@
     
     <Grid ClipToBounds="True">
         <!-- Delete Button (Revealed Behind) -->
-        <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteItemCommand}"
+        <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteIngredientCommand}"
                 CommandParameter="{Binding}"
+                Classes.open="{Binding IsSlidRight}"
                 Background="Red"
+                VerticalAlignment="Stretch"
+                Padding="8" Width="64" CornerRadius="0">
+            <Button.Transitions>
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" 
+                                                   Duration="0:0:0.25" 
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Button.Transitions>
+            <Button.Styles>
+                <Style Selector="Button">
+                    <Setter Property="RenderTransform" Value="translateX(-64px)" />
+                </Style>
+                <Style Selector="Button.open">
+                    <Setter Property="RenderTransform" Value="translateX(0px)" />
+                </Style>
+            </Button.Styles>
+            <ic:FluentIcon Icon="Delete" Foreground="White"/>
+        </Button>
+
+        <!-- Edit Button (Revealed Behind) -->
+        <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteIngredientCommand}"
+                CommandParameter="{Binding}"
+                Classes.open="{Binding IsSlidLeft}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Stretch"
                 Padding="8" Width="64" CornerRadius="0">
-            <ic:FluentIcon Icon="Delete" Foreground="White"/>
+            <Button.Transitions>
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" 
+                                                   Duration="0:0:0.25" 
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Button.Transitions>
+            <Button.Styles>
+                <Style Selector="Button">
+                    <Setter Property="RenderTransform" Value="translateX(64px)" />
+                </Style>
+                <Style Selector="Button.open">
+                    <Setter Property="RenderTransform" Value="translateX(0px)" />
+                </Style>
+            </Button.Styles>
+            <ic:FluentIcon Icon="Edit" Foreground="White"/>
         </Button>
 
         <!-- Sliding Main Content -->
         <Border x:Name="MainBorder"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                Classes.open="{Binding IsSlidLeft}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="0,0,0,1"
+                Classes.left="{Binding IsSlidLeft}"
+                Classes.right="{Binding IsSlidRight}"
                 Padding="12">
             <Border.Transitions>
                 <Transitions>
@@ -45,36 +88,29 @@
                 <Style Selector="Border#MainBorder">
                     <Setter Property="RenderTransform" Value="translateX(0px)" />
                 </Style>
-                <Style Selector="Border#MainBorder.open">
-                    <Setter Property="RenderTransform" Value="translateX(-56px)" />
+                <Style Selector="Border#MainBorder.left">
+                    <Setter Property="RenderTransform" Value="translateX(-64px)" />
+                </Style>
+                <Style Selector="Border#MainBorder.right">
+                    <Setter Property="RenderTransform" Value="translateX(64px)" />
                 </Style>
             </Border.Styles>
 
             <Border.GestureRecognizers>
-                <SwipeGestureRecognizer CanHorizontallySwipe="True" Threshold="10" />
+                <SwipeGestureRecognizer CanHorizontallySwipe="True" IsMouseEnabled="True" Threshold="10" />
             </Border.GestureRecognizers>
 
-            <Grid ColumnDefinitions="*, Auto">            
-                <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBlock Text="{Binding Category}" Opacity="0.7" FontSize="12"/>
-                        <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
-                        <TextBlock FontSize="12" Opacity="0.7">
-                            <Run Text="{Binding Quantity}"/>
-                            <Run Text="{Binding UnitDisplay}"/>
-                        </TextBlock>
-                    </StackPanel>
+            <StackPanel VerticalAlignment="Center" Spacing="2">
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="{Binding Category}" Opacity="0.7" FontSize="12"/>
+                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
+                    <TextBlock FontSize="12" Opacity="0.7">
+                        <Run Text="{Binding Quantity}"/>
+                        <Run Text="{Binding UnitDisplay}"/>
+                    </TextBlock>
                 </StackPanel>
-
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).Mobile_EditItemCommand}"
-                        CommandParameter="{Binding}"
-                        Grid.Column="1"
-                        VerticalAlignment="Center"
-                        Padding="8" Width="36" Height="36" CornerRadius="18">
-                    <ic:FluentIcon Icon="Edit"/>
-                </Button>
-            </Grid>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>
