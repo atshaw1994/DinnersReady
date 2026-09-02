@@ -17,8 +17,8 @@ using System.Threading.Tasks;
 namespace DinnersReady.ViewModels;
 
 public record MainServicesContext(
-    IngredientStore IngredientStore,
-    RecipeStore RecipeStore,
+    IIngredientStoreService IngredientStore,
+    IRecipeStoreService RecipeStore,
     RecipeGeneratorViewModel RecipeGeneratorViewModel,
     IShareService ShareService
 );
@@ -258,7 +258,10 @@ public partial class MainViewModel : ObservableValidator
     {
         if (vm == null) return;
 
-        if (PantryItems.Remove(vm) || FridgeItems.Remove(vm))
+        bool removedFromPantry = PantryItems?.Remove(vm) ?? false;
+        bool removedFromFridge = FridgeItems?.Remove(vm) ?? false;
+
+        if ((removedFromPantry || removedFromFridge) && Services?.IngredientStore != null)
         {
             await Services.IngredientStore.RemoveIngredientAsync(vm.Model);
         }
@@ -284,7 +287,7 @@ public partial class MainViewModel : ObservableValidator
     {
         if (vm == null) return;
 
-        if (SavedRecipes.Remove(vm))
+        if (SavedRecipes?.Remove(vm) == true && Services?.RecipeStore != null)
         {
             await Services.RecipeStore.RemoveRecipeAsync(vm.Model);
         }

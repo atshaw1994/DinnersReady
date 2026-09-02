@@ -6,6 +6,8 @@ namespace DinnersReady
 {
     [JsonSerializable(typeof(Ingredient))]
     [JsonSerializable(typeof(List<Ingredient>))]
+    [JsonSerializable(typeof(Recipe))]
+    [JsonSerializable(typeof(List<Recipe>))]
     [JsonSerializable(typeof(Dictionary<string, double>))]
     public partial class DinnersReadyJsonContext : JsonSerializerContext;
 }

@@ -2,7 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Headless.XUnit;
 using DinnersReady.Models;
+using DinnersReady.Services;
 using DinnersReady.ViewModels;
+using Moq;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -12,6 +14,20 @@ namespace DinnersReady.Tests;
 [Trait("Category", "ViewModels")]
 public class ViewModelTests
 {
+    private readonly Mock<IIngredientStoreService> _mockIngredientStore = new();
+    private readonly Mock<IRecipeStoreService> _mockRecipeStore = new();
+    private readonly Mock<IShareService> _mockShareService = new();
+
+    private MainServicesContext CreateMockServicesContext()
+    {
+        return new MainServicesContext(
+            _mockIngredientStore.Object,
+            _mockRecipeStore.Object,
+            null!, // RecipeGeneratorViewModel not needed for store tests
+            _mockShareService.Object
+        );
+    }
+
     #region IngredientViewModel Tests
 
     [Fact]
@@ -33,7 +49,7 @@ public class ViewModelTests
         Assert.Equal("g", vmEmpty.UnitDisplay);
     }
 
-    [AvaloniaFact]
+    [Fact]
     public void IngredientViewModel_RequestDelete_InvokesCallback()
     {
         // Arrange
@@ -53,7 +69,7 @@ public class ViewModelTests
         Assert.True(callbackInvoked);
     }
 
-    [AvaloniaFact]
+    [Fact]
     public void IngredientViewModel_AcceptEdits_TogglesIsEditing()
     {
         // Arrange
@@ -114,7 +130,7 @@ public class ViewModelTests
         Assert.Contains("1. Whisk eggs.", shareableText);
     }
 
-    [AvaloniaFact]
+    [Fact]
     public async Task RecipeViewModel_RequestShare_InvokesCallback()
     {
         // Arrange
@@ -138,11 +154,11 @@ public class ViewModelTests
 
     #region MainViewModel Tests
 
-    [AvaloniaFact]
+    [Fact]
     public void MainViewModel_OpenAndCloseAddForm_UpdatesIsAddingItem()
     {
         // Arrange
-        var mainVm = new MainViewModel();
+        var mainVm = new MainViewModel(CreateMockServicesContext());
 
         // Act & Assert - Open Form
         mainVm.OpenAddFormCommand.Execute(null);
@@ -153,11 +169,15 @@ public class ViewModelTests
         Assert.False(mainVm.IsAddingItem);
     }
 
-    [AvaloniaFact]
-    public async Task MainViewModel_RemoveIngredientVmAsync_RemovesFromCollection()
+    [Fact]
+    public async Task MainViewModel_RemoveIngredientVmAsync_RemovesFromCollectionAndStore()
     {
         // Arrange
-        var mainVm = new MainViewModel();
+        _mockIngredientStore
+            .Setup(s => s.RemoveIngredientAsync(It.IsAny<Ingredient>()))
+            .Returns(Task.CompletedTask);
+
+        var mainVm = new MainViewModel(CreateMockServicesContext());
         var itemToDelete = new IngredientViewModel(new Ingredient { Id = "test-1", Name = "Salt", Location = StorageLocation.Pantry });
 
         mainVm.PantryItems.Add(itemToDelete);
@@ -167,13 +187,18 @@ public class ViewModelTests
 
         // Assert
         Assert.DoesNotContain(itemToDelete, mainVm.PantryItems);
+        _mockIngredientStore.Verify(s => s.RemoveIngredientAsync(itemToDelete.Model), Times.Once);
     }
 
-    [AvaloniaFact]
-    public async Task MainViewModel_DeleteRecipeVmAsync_RemovesFromSavedRecipes()
+    [Fact]
+    public async Task MainViewModel_DeleteRecipeVmAsync_RemovesFromSavedRecipesAndStore()
     {
         // Arrange
-        var mainVm = new MainViewModel();
+        _mockRecipeStore
+            .Setup(s => s.RemoveRecipeAsync(It.IsAny<Recipe>()))
+            .Returns(Task.CompletedTask);
+
+        var mainVm = new MainViewModel(CreateMockServicesContext());
         var recipeToDelete = new RecipeViewModel(new Recipe { Id = "recipe-1", Title = "Pasta" });
 
         mainVm.SavedRecipes.Add(recipeToDelete);
@@ -183,6 +208,7 @@ public class ViewModelTests
 
         // Assert
         Assert.DoesNotContain(recipeToDelete, mainVm.SavedRecipes);
+        _mockRecipeStore.Verify(s => s.RemoveRecipeAsync(recipeToDelete.Model), Times.Once);
     }
 
     #endregion

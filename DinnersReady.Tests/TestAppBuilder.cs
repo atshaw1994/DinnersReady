@@ -11,6 +11,6 @@ public class TestAppBuilder
 {
     // Bootstraps your main App class (from DinnersReady/App.axaml.cs) in headless mode
     public static AppBuilder BuildAvaloniaApp() =>
-        AppBuilder.Configure<DinnersReady.App>()
+        AppBuilder.Configure<App>()
             .UseHeadless(new AvaloniaHeadlessPlatformOptions());
 }
