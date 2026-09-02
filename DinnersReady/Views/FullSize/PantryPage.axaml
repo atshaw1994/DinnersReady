@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
              xmlns:fsviews="using:DinnersReady.Views.FullSize"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DinnersReady.Views.FullSize.PantryPage"
@@ -22,7 +21,7 @@
                 <!-- List of Pantry Items -->
                 <ItemsControl ItemsSource="{Binding PantryItems}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:Ingredient">
+                        <DataTemplate x:DataType="vm:IngredientViewModel">
                             <fsviews:IngredientControl />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

@@ -9,35 +9,23 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DinnersReady.Views.FullSize.SavedRecipesPage"
              x:DataType="vm:MainViewModel">
-    <Grid RowDefinitions="*,Auto">
-        <ScrollViewer>
-            <!-- Message if saved recipes is empty -->
-            <StackPanel Spacing="16">
-                <TextBlock Text="No saved recipes added yet." 
-                           IsVisible="{Binding !SavedRecipes.Count}" 
-                           Opacity="0.6" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,32,0,0"/>
+    <ScrollViewer>
+        <!-- Message if saved recipes is empty -->
+        <StackPanel Spacing="16">
+            <TextBlock Text="You haven't saved any recipes yet." 
+                        IsVisible="{Binding !SavedRecipes.Count}" 
+                        Opacity="0.6" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,32,0,0"/>
 
-                <!-- List of Saved Recipes -->
-                <ItemsControl ItemsSource="{Binding SavedRecipes}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:GeneratedRecipe">
-                            <fsviews:SavedRecipeControl />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </ScrollViewer>
-
-        <Button Grid.Row="1"
-                Margin="16" Padding="16"
-                Width="64" Height="64"
-                CornerRadius="32"
-                Command="{Binding OpenAddFormCommand}"
-                HorizontalAlignment="Center" 
-                HorizontalContentAlignment="Center">
-                <ic:FluentIcon Icon="Add" IconVariant="Filled"/>
-        </Button>
-    </Grid>
+            <!-- List of Saved Recipes -->
+            <ItemsControl ItemsSource="{Binding SavedRecipes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:GeneratedRecipe">
+                        <fsviews:SavedRecipeControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

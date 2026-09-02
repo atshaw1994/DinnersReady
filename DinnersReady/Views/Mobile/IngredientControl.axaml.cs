@@ -1,8 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using DinnersReady.Models;
-using System;
-using System.Diagnostics;
+using DinnersReady.ViewModels;
 
 namespace DinnersReady.Views.Mobile;
 
@@ -16,33 +15,33 @@ public partial class IngredientControl : UserControl
 
     private void OnSwipeGestureEnded(object? sender, SwipeGestureEndedEventArgs e)
     {
-        if (DataContext is not Ingredient item) return;
+        if (DataContext is not IngredientViewModel vm || vm.Model is null) return;
 
         // Left swipe opens (-X velocity), Right swipe closes (+X velocity)
         if (e.Velocity.X > -100)
         {
-            if (item.IsSlidRight)
+            if (vm.IsSlidRight)
             {
-                item.IsSlidRight = false;
-                item.IsSlidLeft = false;
+                vm.IsSlidRight = false;
+                vm.IsSlidLeft = false;
             }
-            else if (!item.IsSlidLeft)
+            else if (!vm.IsSlidLeft)
             {
-                item.IsSlidLeft = true;
-                item.IsSlidRight = false;
+                vm.IsSlidLeft = true;
+                vm.IsSlidRight = false;
             }
         }
         else if (e.Velocity.X < 100)
         {
-            if (item.IsSlidLeft)
+            if (vm.IsSlidLeft)
             {
-                item.IsSlidRight = false;
-                item.IsSlidLeft = false;
+                vm.IsSlidRight = false;
+                vm.IsSlidLeft = false;
             }
-            else if (!item.IsSlidRight)
+            else if (!vm.IsSlidRight)
             {
-                item.IsSlidRight = true;
-                item.IsSlidLeft = false;
+                vm.IsSlidRight = true;
+                vm.IsSlidLeft = false;
             }
         }
     }

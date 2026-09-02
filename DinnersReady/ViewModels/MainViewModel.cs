@@ -28,6 +28,72 @@ public partial class MainViewModel : ObservableValidator
 {
     public MainServicesContext Services { get; }
 
+    // Design-time constructor
+    public MainViewModel()
+    {
+        if (Design.IsDesignMode)
+        {
+            Services = new MainServicesContext(
+                null!,
+                null!,
+                new RecipeGeneratorViewModel(),
+                null!
+            );
+
+            PantryItems =
+            [
+                new IngredientViewModel(
+                    new Ingredient { Id = "cumin-ground", Name = "Ground Cumin", Category = "Spices", Quantity = 50, Unit = "g" }
+                ),
+                new IngredientViewModel(
+                    new Ingredient { Id = "jasmine-rice", Name = "Jasmine Rice", Category = "Grains", Quantity = 1000, Unit = "g" }
+                ),
+                new IngredientViewModel(
+                    new Ingredient { Id = "olive-oil", Name = "Olive Oil", Category = "Oils", Quantity = 500, Unit = "ml" }
+                )
+            ];
+
+            FridgeItems =
+            [
+                new IngredientViewModel(
+                    new Ingredient { Id = "whole-milk", Name = "Whole Milk", Category = "Dairy", Quantity = 1, Unit = "l" }
+                ),
+                new IngredientViewModel(
+                    new Ingredient { Id = "cheddar-cheese", Name = "Cheddar Cheese", Category = "Dairy", Quantity = 250, Unit = "g" }
+                ),
+                new IngredientViewModel(
+                    new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
+                )
+            ];
+
+            SavedRecipes =
+            [
+                DesignData.GeneratedRecipe_DesignData.CheesyOmelette
+            ];
+        }
+        else
+        {
+            Services = null!;
+        }
+    }
+
+    public MainViewModel(MainServicesContext services)
+    {
+        Services = services;
+
+        // Initialize collections so bindings don't fail null checks
+        IngredientLibrary = [];
+        IngredientSuggestions = [];
+        PantryItems = [];
+        FridgeItems = [];
+
+        // Re-evaluate SaveItem command whenever validation errors change
+        ErrorsChanged += (s, e) => SaveItemCommand.NotifyCanExecuteChanged();
+
+        // Defer all loading until the WASM UI thread finishes its initial layout pass
+        Dispatcher.UIThread.Post(async () => await InitializeAsync(), DispatcherPriority.Background);
+    }
+
     #region Fields
     // Cache JsonSerializerOptions instance to improve performance and satisfy CA1869
     private readonly JsonSerializerOptions _jsonOptions = new()
@@ -48,9 +114,9 @@ public partial class MainViewModel : ObservableValidator
     #endregion
 
     #region Properties
-    [ObservableProperty] public partial ObservableCollection<Ingredient> PantryItems { get; set; } = [];
+    [ObservableProperty] public partial ObservableCollection<IngredientViewModel> PantryItems { get; set; } = [];
 
-    [ObservableProperty] public partial ObservableCollection<Ingredient> FridgeItems { get; set; } = [];
+    [ObservableProperty] public partial ObservableCollection<IngredientViewModel> FridgeItems { get; set; } = [];
 
     [ObservableProperty] public partial ObservableCollection<GeneratedRecipe> SavedRecipes { get; set; } = [];
 
@@ -137,50 +203,6 @@ public partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    private void Mobile_EditItem(Ingredient item)
-    {
-        if (item == null) return;
-
-        ItemCurrentlyEditing = item;
-        NewItemName = item.Name;
-        NewItemCategory = item.Category;
-        LocationIndex = (int)item.Location;
-        SelectedUnit = item.Unit;
-        NewItemQuantity = item.Quantity;
-        NewItemExpiry = item.ExpiryDate;
-
-        IsAddingItem = true;
-        IsEditingItem = true; // Opens the slide-in overlay form
-    }
-
-    [RelayCommand]
-    public async Task ToggleEditIngredient(Ingredient ingredient)
-    {
-        if (ingredient is null) return;
-
-        if (ingredient.IsEditing)
-        {
-            await Services.IngredientStore!.RemoveIngredientAsync(ingredient);
-            await Services.IngredientStore!.AddIngredientAsync(ingredient);
-            await LoadInventoryAsync();
-            ingredient.IsEditing = false;
-        }
-        else
-        {
-            ingredient.IsEditing = true;
-        }
-    }
-
-    [RelayCommand]
-    private async Task DeleteIngredientAsync(Ingredient item)
-    {
-        if (item == null) return;
-
-        await Services.IngredientStore!.RemoveIngredientAsync(item);
-        await LoadInventoryAsync();
-    }
-
-    [RelayCommand]
     public async Task ShareRecipe(GeneratedRecipe recipe)
     {
         if (recipe is null || Services.ShareService is null) return;
@@ -231,60 +253,7 @@ public partial class MainViewModel : ObservableValidator
     }
     #endregion
 
-    // Design-time constructor
-    public MainViewModel()
-    {
-        if (Design.IsDesignMode)
-        {
-            Services = new MainServicesContext(
-                null!,
-                null!,
-                new RecipeGeneratorViewModel(),
-                null!
-            );
-
-            PantryItems =
-            [
-                new Ingredient { Id = "cumin-ground", Name = "Ground Cumin", Category = "Spices", Quantity = 50, Unit = "g" },
-                new Ingredient { Id = "jasmine-rice", Name = "Jasmine Rice", Category = "Grains", Quantity = 1000, Unit = "g" },
-                new Ingredient { Id = "olive-oil", Name = "Olive Oil", Category = "Oils", Quantity = 500, Unit = "ml" }
-            ];
-
-            FridgeItems =
-            [
-                new Ingredient { Id = "whole-milk", Name = "Whole Milk", Category = "Dairy", Quantity = 1, Unit = "l" },
-                new Ingredient { Id = "cheddar-cheese", Name = "Cheddar Cheese", Category = "Dairy", Quantity = 250, Unit = "g" },
-                new Ingredient { Id = "large-eggs", Name = "Large Eggs", Category = "Dairy", Quantity = 12, Unit = "pcs" }
-            ];
-
-            SavedRecipes =
-            [
-                DesignData.GeneratedRecipe_DesignData.CheesyOmelette
-            ];
-        }
-        else
-        {
-            Services = null!;
-        }
-    }
-
-    public MainViewModel(MainServicesContext services)
-    {
-        Services = services;
-
-        // Initialize collections so bindings don't fail null checks
-        IngredientLibrary = [];
-        IngredientSuggestions = [];
-        PantryItems = [];
-        FridgeItems = [];
-
-        // Re-evaluate SaveItem command whenever validation errors change
-        ErrorsChanged += (s, e) => SaveItemCommand.NotifyCanExecuteChanged();
-
-        // Defer all loading until the WASM UI thread finishes its initial layout pass
-        Dispatcher.UIThread.Post(async () => await InitializeAsync(), DispatcherPriority.Background);
-    }
-
+    #region Initialization Methods
     private async Task InitializeAsync()
     {
         await LoadLibraryAsync();
@@ -335,17 +304,54 @@ public partial class MainViewModel : ObservableValidator
         }
     }
 
-    public async Task LoadInventoryAsync()
+    private async Task LoadInventoryAsync()
     {
         var allItems = await Services.IngredientStore.GetIngredientsAsync();
 
         // Clear and repopulate on the UI thread safely
         PantryItems.Clear();
         foreach (var item in allItems.Where(i => i.Location == StorageLocation.Pantry))
-            PantryItems.Add(item);
+        {
+            var itemVm = new IngredientViewModel(item, RemoveIngredient, EditIngredient, ShowOverlay);
+            PantryItems.Add(itemVm);
+        }
 
         FridgeItems.Clear();
         foreach (var item in allItems.Where(i => i.Location == StorageLocation.Fridge))
-            FridgeItems.Add(item);
+        {
+            var itemVm = new IngredientViewModel(item, RemoveIngredient, EditIngredient, ShowOverlay);
+            FridgeItems.Add(itemVm);
+        }
     }
+    #endregion
+
+    #region Ingredient Control Methods
+    private async Task RemoveIngredient(Ingredient ingredient)
+    {
+        var itemVm = PantryItems.FirstOrDefault(i => i.Model == ingredient);
+        if (itemVm != null)
+        {
+            PantryItems.Remove(itemVm);
+            await Services.IngredientStore.RemoveIngredientAsync(ingredient);
+            return;
+        }
+
+        itemVm = FridgeItems.FirstOrDefault(i => i.Model == ingredient);
+        if (itemVm != null)
+        {
+            FridgeItems.Remove(itemVm);
+            await Services.IngredientStore.RemoveIngredientAsync(ingredient);
+        }
+    }
+
+    private async Task EditIngredient(Ingredient ingredient) => await Services.IngredientStore.ModifyIngredientAsync(ingredient);
+
+    private void ShowOverlay(Ingredient ingredient)
+    {
+        if (ingredient == null) return;
+        ItemCurrentlyEditing = ingredient;
+        IsAddingItem = true; // Opens the slide-in overlay form
+    } 
+    #endregion
+
 }

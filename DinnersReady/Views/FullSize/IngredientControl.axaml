@@ -7,15 +7,18 @@
              xmlns:models="using:DinnersReady.Models"
              mc:Ignorable="d" d:DesignWidth="400"
              x:Class="DinnersReady.Views.FullSize.IngredientControl"
-             x:DataType="models:Ingredient">
+             x:DataType="vm:IngredientViewModel">
     <!-- DESIGN-TIME INGREDIENT MOCK -->
     <Design.DataContext>
-        <models:Ingredient Id="cumin-ground" 
-                           Name="Ground Cumin" 
-                           Category="Spices" 
-                           Quantity="50" 
-                           Unit="g" 
-                           IsEditing="False"/>
+        <vm:IngredientViewModel>
+            <vm:IngredientViewModel.Model>
+                <models:Ingredient Id="cumin-ground" 
+                                   Name="Ground Cumin" 
+                                   Category="Spices" 
+                                   Quantity="50" 
+                                   Unit="g" />
+            </vm:IngredientViewModel.Model>
+        </vm:IngredientViewModel>
     </Design.DataContext>
 
     <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
@@ -44,8 +47,7 @@
 
                 <!-- Edit & Delete Actions -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-                    <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).ToggleEditIngredientCommand}"
-                            CommandParameter="{Binding}"
+                    <Button Command="{Binding EditCommand}"
                             Padding="8" Width="36" Height="36" CornerRadius="18">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">
@@ -54,8 +56,7 @@
                         </Button.Styles>
                         <ic:FluentIcon Icon="Edit"/>
                     </Button>
-                    <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteIngredientCommand}"
-                            CommandParameter="{Binding}"
+                    <Button Command="{Binding RequestDeleteCommand}"
                             Padding="8" Width="36" Height="36" CornerRadius="18">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">
@@ -85,8 +86,7 @@
                 </StackPanel>
 
                 <!-- Accept Edits Action -->
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).ToggleEditIngredientCommand}"
-                        CommandParameter="{Binding}"
+                <Button Command="{Binding AcceptEditsCommand}"
                         Grid.Column="2" Margin="8,0,0,0" 
                         Padding="8" Width="36" Height="36" CornerRadius="18">
                     <ic:FluentIcon Icon="Checkmark"/>

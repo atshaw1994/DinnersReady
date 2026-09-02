@@ -40,8 +40,4 @@
 		<AvaloniaResource Include="DesignData\GeneratedRecipe_DesignData.cs" />
 		<EmbeddedResource Include="Assets\IngredientsLibrary.json" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="ViewModels\Mobile\" />
-	</ItemGroup>
 </Project>

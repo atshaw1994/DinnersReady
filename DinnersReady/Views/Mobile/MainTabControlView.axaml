@@ -5,6 +5,7 @@
              xmlns:vm="using:DinnersReady.ViewModels"
              xmlns:sharedviews="using:DinnersReady.Views"
              xmlns:mobileviews="using:DinnersReady.Views.Mobile"
+             xmlns:models="using:DinnersReady.Models"
              xmlns:designData="using:DinnersReady.DesignData"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="DinnersReady.Views.Mobile.MainTabControlView"
@@ -22,6 +23,7 @@
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
                     <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
+                    
                     <!-- The view that displays progress and results -->
                     <sharedviews:AiRecipeGenerator Margin="8,0" DataContext="{Binding Services.RecipeGeneratorViewModel}"/>
                 </StackPanel>
@@ -44,6 +46,33 @@
             </ContentPage.Header>
     
             <mobileviews:FridgePage/>
+        </ContentPage>
+
+        <!-- SAVED RECIPES TAB -->
+        <ContentPage>
+            <ContentPage.Header>
+                <TextBlock Classes="headerText" Text="Recipes"/>
+            </ContentPage.Header>
+            
+            <ScrollViewer>
+                <!-- Message if saved recipes is empty -->
+                <StackPanel Spacing="16">
+                    <TextBlock Text="You haven't saved any recipes yet." 
+                                IsVisible="{Binding !SavedRecipes.Count}" 
+                                Opacity="0.6" 
+                                HorizontalAlignment="Center" 
+                                Margin="0,32,0,0"/>
+
+                    <!-- List of Saved Recipes -->
+                    <ItemsControl ItemsSource="{Binding SavedRecipes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:GeneratedRecipe">
+                                <mobileviews:SavedRecipeControl />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
         </ContentPage>
     </TabbedPage>
 </UserControl>

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.Generic;
 
 namespace DinnersReady.Models;
 
-public class GeneratedRecipe
+public partial class GeneratedRecipe : ObservableObject
 {
     public string Id { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
@@ -15,6 +16,7 @@ public class GeneratedRecipe
     public List<string> UsedIngredients { get; set; } = [];
     public List<string> AdditionalIngredientsNeeded { get; set; } = [];
     public List<string> Instructions { get; set; } = [];
+    [ObservableProperty] public partial bool IsSlidRight { get; set; } = false;
 
     private static string FormatTime(int totalMinutes)
     {

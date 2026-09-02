@@ -21,7 +21,8 @@ public interface IIngredientStoreRepository
 public interface IIngredientStoreService
 {
     Task AddIngredientAsync(Ingredient item);
-    Task RemoveIngredientAsync(Ingredient item);
+    Task RemoveIngredientAsync(Ingredient item); 
+    Task ModifyIngredientAsync(Ingredient item);
     Task<IEnumerable<Ingredient>> GetIngredientsAsync();
     Task ClearAllAsync();
 }
@@ -137,7 +138,12 @@ public class IngredientStore(IIngredientStoreRepository ingredientStoreRepositor
     public async Task AddIngredientAsync(Ingredient item)
     {
         if (item == null) return;
+        await ingredientStoreRepository.SaveAsync(item);
+    }
 
+    public async Task ModifyIngredientAsync(Ingredient item)
+    {
+        if (item == null) return;
         await ingredientStoreRepository.SaveAsync(item);
     }
 
