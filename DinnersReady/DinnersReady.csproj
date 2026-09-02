@@ -37,7 +37,7 @@
 		<Compile Remove="Assets\GeneratedRecipe_DesignData.cs" />
 		<None Remove="appsettings.json" />
 		<AvaloniaResource Include="appsettings.json" />
-		<AvaloniaResource Include="DesignData\GeneratedRecipe_DesignData.cs" />
+		<AvaloniaResource Include="DesignData\DesignData.cs" />
 		<EmbeddedResource Include="Assets\IngredientsLibrary.json" />
 	</ItemGroup>
 </Project>

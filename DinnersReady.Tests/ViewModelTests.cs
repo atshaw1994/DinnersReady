@@ -1,179 +1,189 @@
+using System;
+using System.Threading.Tasks;
 using Avalonia.Headless.XUnit;
 using DinnersReady.Models;
-using DinnersReady.Services;
 using DinnersReady.ViewModels;
-using Moq;
+using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace DinnersReady.Tests;
 
 [Trait("Category", "ViewModels")]
 public class ViewModelTests
 {
-    private static MainViewModel CreateMainViewModel(
-        out Mock<IIngredientStoreRepository> ingredientRepoMock,
-        out Mock<IRecipeStoreRepository> recipeRepoMock,
-        out Mock<IShareService> shareServiceMock)
-    {
-        ingredientRepoMock = new Mock<IIngredientStoreRepository>();
-        recipeRepoMock = new Mock<IRecipeStoreRepository>();
-        shareServiceMock = new Mock<IShareService>();
-
-        ingredientRepoMock
-            .Setup(s => s.LoadAllAsync())
-            .ReturnsAsync(new List<Ingredient>());
-
-        recipeRepoMock
-            .Setup(s => s.LoadAllAsync())
-            .ReturnsAsync(new List<GeneratedRecipe>());
-
-        var ingredientStore = new IngredientStore(ingredientRepoMock.Object);
-        var recipeStore = new RecipeStore(recipeRepoMock.Object);
-
-        var recipeGeneratorViewModel = new RecipeGeneratorViewModel(
-            new RecipeGeneratorContext(null!, ingredientStore, recipeStore, shareServiceMock.Object));
-
-        var context = new MainServicesContext(
-            ingredientStore,
-            recipeStore,
-            recipeGeneratorViewModel,
-            shareServiceMock.Object);
-
-        return new MainViewModel(context);
-    }
+    #region IngredientViewModel Tests
 
     [Fact]
-    public void NewItemName_Empty_CanSaveItem_IsFalse()
+    public void IngredientViewModel_UnitDisplay_FormatsCorrectly()
     {
-        var vm = CreateMainViewModel(out _, out _, out _);
+        // Arrange
+        var modelGrams = new Ingredient { Unit = "g" };
+        var modelLiters = new Ingredient { Unit = "l" };
+        var modelEmpty = new Ingredient { Unit = "" };
 
-        vm.NewItemName = string.Empty;
+        // Act
+        var vmGrams = new IngredientViewModel(modelGrams);
+        var vmLiters = new IngredientViewModel(modelLiters);
+        var vmEmpty = new IngredientViewModel(modelEmpty);
 
-        Assert.False(vm.CanSaveItem);
+        // Assert
+        Assert.Equal("g", vmGrams.UnitDisplay);
+        Assert.Equal("L", vmLiters.UnitDisplay);
+        Assert.Equal("g", vmEmpty.UnitDisplay);
     }
 
-    [Fact]
-    public void NewItemName_And_Category_Set_CanSaveItem_IsTrue()
+    [AvaloniaFact]
+    public void IngredientViewModel_RequestDelete_InvokesCallback()
     {
-        var vm = CreateMainViewModel(out _, out _, out _);
-
-        vm.NewItemName = "Chicken Breast";
-        vm.NewItemCategory = "Meat";
-
-        Assert.True(vm.CanSaveItem);
-    }
-
-    [Fact]
-    public async Task SaveItemCommand_ValidItem_CallsRepositorySaveAsync()
-    {
-        var vm = CreateMainViewModel(out var ingredientRepoMock, out _, out _);
-
-        vm.NewItemName = "Chicken Breast";
-        vm.NewItemCategory = "Meat";
-        vm.NewItemQuantity = 2;
-
-        await vm.SaveItemCommand.ExecuteAsync(null);
-
-        ingredientRepoMock.Verify(
-            s => s.SaveAsync(It.Is<Ingredient>(i => i.Name == "Chicken Breast" && i.Category == "Meat")),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task SaveItemCommand_InvalidItem_DoesNotCallRepositorySaveAsync()
-    {
-        var vm = CreateMainViewModel(out var ingredientRepoMock, out _, out _);
-
-        vm.NewItemName = string.Empty;
-        vm.NewItemCategory = string.Empty;
-
-        await vm.SaveItemCommand.ExecuteAsync(null);
-
-        ingredientRepoMock.Verify(s => s.SaveAsync(It.IsAny<Ingredient>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task LoadInventoryAsync_PopulatesPantryAndFridgeCollections()
-    {
-        var vm = CreateMainViewModel(out var ingredientRepoMock, out _, out _);
-
-        ingredientRepoMock
-            .Setup(s => s.LoadAllAsync())
-            .ReturnsAsync(new List<Ingredient>
+        // Arrange
+        bool callbackInvoked = false;
+        var vm = new IngredientViewModel(
+            new Ingredient(),
+            onDeleteRequested: deletedVm =>
             {
-                new() { Id = "pantry-item", Name = "Rice", Location = StorageLocation.Pantry },
-                new() { Id = "fridge-item", Name = "Milk", Location = StorageLocation.Fridge }
+                callbackInvoked = true;
+                return Task.CompletedTask;
             });
 
-        //await vm.LoadInventoryAsync();
+        // Act
+        vm.RequestDeleteCommand.Execute(null);
 
-        Assert.Single(vm.PantryItems);
-        Assert.Equal("Rice", vm.PantryItems.Single().Name);
-        Assert.Single(vm.FridgeItems);
-        Assert.Equal("Milk", vm.FridgeItems.Single().Name);
+        // Assert
+        Assert.True(callbackInvoked);
     }
 
-    [Fact]
-    public async Task DeleteIngredientAsyncCommand_CallsRepositoryDeleteAsync()
+    [AvaloniaFact]
+    public void IngredientViewModel_AcceptEdits_TogglesIsEditing()
     {
-        var vm = CreateMainViewModel(out var ingredientRepoMock, out _, out _);
-        var item = new Ingredient { Id = "test-item", Name = "Test" };
+        // Arrange
+        var vm = new IngredientViewModel(new Ingredient()) { IsEditing = true };
 
-        //await vm.DeleteIngredientCommand.ExecuteAsync(item);
+        // Act
+        vm.AcceptEditsCommand.Execute(null);
 
-        ingredientRepoMock.Verify(s => s.DeleteAsync(item), Times.Once);
+        // Assert
+        Assert.False(vm.IsEditing);
     }
 
-    [Fact]
-    public async Task DeleteRecipeAsyncCommand_RemovesRecipeFromSavedRecipesAndStore()
+    #endregion
+
+    #region RecipeViewModel Tests
+
+    [Theory]
+    [InlineData(0, 0, "N/A")]
+    [InlineData(45, 0, "45 mins")]
+    [InlineData(60, 0, "1 hr")]
+    [InlineData(15, 60, "1 hr 15 mins")]
+    public void RecipeViewModel_TimeDisplays_FormatCorrectly(int prepMin, int cookMin, string expectedTotalDisplay)
     {
-        var vm = CreateMainViewModel(out _, out var recipeRepoMock, out _);
-        var recipe = new GeneratedRecipe { Id = "recipe-1", Title = "Test Recipe" };
-        vm.SavedRecipes.Add(recipe);
-
-        await vm.DeleteRecipeCommand.ExecuteAsync(recipe);
-
-        recipeRepoMock.Verify(s => s.DeleteAsync(recipe), Times.Once);
-        Assert.DoesNotContain(recipe, vm.SavedRecipes);
-    }
-
-    [Fact]
-    public void ClearRecipeCommand_ResetsCurrentRecipeToNull()
-    {
-        var vm = new RecipeGeneratorViewModel(new RecipeGeneratorContext(null!, null!, null!, null!))
+        // Arrange
+        var model = new Recipe
         {
-            CurrentRecipe = new GeneratedRecipe { Id = "r1", Title = "Something" }
+            PrepTimeMinutes = prepMin,
+            CookTimeMinutes = cookMin
         };
 
-        vm.ClearRecipeCommand.Execute(null);
+        // Act
+        var vm = new RecipeViewModel(model);
 
-        Assert.Null(vm.CurrentRecipe);
+        // Assert
+        Assert.Equal(expectedTotalDisplay, vm.TotalTimeDisplay);
     }
 
     [Fact]
-    public async Task SaveRecipeCommand_WithCurrentRecipe_CallsRepositorySaveAsync()
+    public void RecipeViewModel_ToShareableText_OutputsFormattedString()
     {
-        var recipeRepoMock = new Mock<IRecipeStoreRepository>();
-        recipeRepoMock.Setup(r => r.LoadAllAsync()).ReturnsAsync(new List<GeneratedRecipe>());
-
-        var recipeStore = new RecipeStore(recipeRepoMock.Object);
-        var vm = new RecipeGeneratorViewModel(new RecipeGeneratorContext(null!, null!, recipeStore, null!))
+        // Arrange
+        var recipe = new Recipe
         {
-            CurrentRecipe = new GeneratedRecipe { Id = "r1", Title = "Something" }
+            Title = "Scrambled Eggs",
+            PrepTimeMinutes = 2,
+            CookTimeMinutes = 3,
+            UsedIngredients = ["Eggs", "Butter"],
+            Instructions = ["1. Whisk eggs.", "2. Cook in pan."]
         };
+        var vm = new RecipeViewModel(recipe);
 
-        await vm.SaveRecipeCommand.ExecuteAsync(CancellationToken.None);
+        // Act
+        string shareableText = vm.ToShareableText();
 
-        recipeRepoMock.Verify(s => s.SaveAsync(vm.CurrentRecipe), Times.Once);
+        // Assert
+        Assert.Contains("Scrambled Eggs", shareableText);
+        Assert.Contains("• Eggs", shareableText);
+        Assert.Contains("1. Whisk eggs.", shareableText);
     }
 
-    [Fact]
-    public async Task SaveRecipeCommand_WithoutCurrentRecipe_DoesNotThrow()
+    [AvaloniaFact]
+    public async Task RecipeViewModel_RequestShare_InvokesCallback()
     {
-        var vm = new RecipeGeneratorViewModel(new RecipeGeneratorContext(null!, null!, null!, null!));
+        // Arrange
+        bool callbackInvoked = false;
+        var vm = new RecipeViewModel(
+            new Recipe(),
+            onShareRequested: sharedVm =>
+            {
+                callbackInvoked = true;
+                return Task.CompletedTask;
+            });
 
-        var exception = await Record.ExceptionAsync(() => vm.SaveRecipeCommand.ExecuteAsync(CancellationToken.None));
+        // Act
+        await vm.RequestShareCommand.ExecuteAsync(null);
 
-        Assert.Null(exception);
+        // Assert
+        Assert.True(callbackInvoked);
     }
+
+    #endregion
+
+    #region MainViewModel Tests
+
+    [AvaloniaFact]
+    public void MainViewModel_OpenAndCloseAddForm_UpdatesIsAddingItem()
+    {
+        // Arrange
+        var mainVm = new MainViewModel();
+
+        // Act & Assert - Open Form
+        mainVm.OpenAddFormCommand.Execute(null);
+        Assert.True(mainVm.IsAddingItem);
+
+        // Act & Assert - Close Form
+        mainVm.CloseAddFormCommand.Execute(null);
+        Assert.False(mainVm.IsAddingItem);
+    }
+
+    [AvaloniaFact]
+    public async Task MainViewModel_RemoveIngredientVmAsync_RemovesFromCollection()
+    {
+        // Arrange
+        var mainVm = new MainViewModel();
+        var itemToDelete = new IngredientViewModel(new Ingredient { Id = "test-1", Name = "Salt", Location = StorageLocation.Pantry });
+
+        mainVm.PantryItems.Add(itemToDelete);
+
+        // Act
+        await mainVm.RemoveIngredientVmAsync(itemToDelete);
+
+        // Assert
+        Assert.DoesNotContain(itemToDelete, mainVm.PantryItems);
+    }
+
+    [AvaloniaFact]
+    public async Task MainViewModel_DeleteRecipeVmAsync_RemovesFromSavedRecipes()
+    {
+        // Arrange
+        var mainVm = new MainViewModel();
+        var recipeToDelete = new RecipeViewModel(new Recipe { Id = "recipe-1", Title = "Pasta" });
+
+        mainVm.SavedRecipes.Add(recipeToDelete);
+
+        // Act
+        await mainVm.DeleteRecipeVmAsync(recipeToDelete);
+
+        // Assert
+        Assert.DoesNotContain(recipeToDelete, mainVm.SavedRecipes);
+    }
+
+    #endregion
 }

@@ -5,7 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="640"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
              xmlns:helpers="using:DinnersReady.Helpers"
              xmlns:designData="using:DinnersReady.DesignData"
              x:Class="DinnersReady.Views.AiRecipeGenerator"
@@ -56,7 +55,7 @@
                                     <ic:SymbolIcon Symbol="ArrowSync" FontSize="16" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Share" Command="{Binding ShareRecipeCommand}">
+                            <MenuItem Header="Share" Command="{Binding RequestShareCommand}">
                                 <MenuItem.Icon>
                                     <ic:SymbolIcon Symbol="ShareIos" FontSize="16" />
                                 </MenuItem.Icon>
@@ -79,7 +78,7 @@
                             IsVisible="{Binding CurrentRecipe, 
                                 Converter={x:Static ObjectConverters.IsNotNull}}">
                 <ContentControl.ContentTemplate>
-                    <DataTemplate DataType="models:GeneratedRecipe">
+                    <DataTemplate DataType="vm:RecipeViewModel">
                         <StackPanel Spacing="8">
                             <!-- Description Section -->
                             <TextBlock TextWrapping="Wrap" FontStyle="Italic" Text="{Binding Description}"/>

@@ -1,7 +1,5 @@
 ﻿using DinnersReady.Models;
 using Microsoft.Extensions.AI;
-using OpenAI.Chat;
-using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
@@ -16,7 +14,7 @@ public class RecipeGeneratorService(IChatClient chatClient)
         PropertyNameCaseInsensitive = true
     };
 
-    public async Task<GeneratedRecipe?> GenerateRecipeAsync(IEnumerable<string> availableIngredients, CancellationToken ct = default)
+    public async Task<Recipe?> GenerateRecipeAsync(IEnumerable<string> availableIngredients, CancellationToken ct = default)
     {
         var ingredientsText = string.Join(", ", availableIngredients);
 
@@ -48,6 +46,6 @@ public class RecipeGeneratorService(IChatClient chatClient)
         if (string.IsNullOrWhiteSpace(cleanJson))
             return null;
 
-        return JsonSerializer.Deserialize<GeneratedRecipe>(cleanJson, JsonOptions);
+        return JsonSerializer.Deserialize<Recipe>(cleanJson, JsonOptions);
     }
 }

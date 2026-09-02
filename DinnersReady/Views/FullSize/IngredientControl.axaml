@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:designData="using:DinnersReady.DesignData"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
@@ -10,21 +11,13 @@
              x:DataType="vm:IngredientViewModel">
     <!-- DESIGN-TIME INGREDIENT MOCK -->
     <Design.DataContext>
-        <vm:IngredientViewModel>
-            <vm:IngredientViewModel.Model>
-                <models:Ingredient Id="cumin-ground" 
-                                   Name="Ground Cumin" 
-                                   Category="Spices" 
-                                   Quantity="50" 
-                                   Unit="g" />
-            </vm:IngredientViewModel.Model>
-        </vm:IngredientViewModel>
+        <vm:IngredientViewModel Model="{x:Static designData:Ingredients.GroundCumin}" />
     </Design.DataContext>
 
     <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
             BorderThickness="0,0,0,1"
-            Padding="12" >
+            Padding="12">
         <Grid>
             <Grid ColumnDefinitions="*, Auto" IsVisible="{Binding !IsEditing}">
                 <!-- Ingredient Details -->
@@ -39,7 +32,7 @@
                         </TextBlock>
                         <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
                         <TextBlock FontSize="12" Opacity="0.7">
-                            <Run Text="Exp: "/>
+                            <Run Text="Exp:"/>
                             <Run Text="{Binding ExpiryDate, StringFormat='{}{0:MM/dd/yy}'}"/>
                         </TextBlock>
                     </StackPanel>

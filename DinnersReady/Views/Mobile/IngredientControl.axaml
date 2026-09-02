@@ -4,21 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
+             xmlns:designData="using:DinnersReady.DesignData"
              mc:Ignorable="d" d:DesignWidth="360"
              x:Class="DinnersReady.Views.Mobile.IngredientControl"
              x:DataType="vm:IngredientViewModel">
-    <!-- DESIGN-TIME INGREDIENT MOCK -->
     <Design.DataContext>
-        <vm:IngredientViewModel>
-            <vm:IngredientViewModel.Model>
-                <models:Ingredient Id="cumin-ground" 
-                                   Name="Ground Cumin" 
-                                   Category="Spices" 
-                                   Quantity="50" 
-                                   Unit="g"/>
-            </vm:IngredientViewModel.Model>
-        </vm:IngredientViewModel>
+        <vm:IngredientViewModel Model="{x:Static designData:Ingredients.GroundCumin}" />
     </Design.DataContext>
     
     <Grid ClipToBounds="True">
@@ -48,7 +39,6 @@
 
         <!-- Edit Button (Revealed Behind) -->
         <Button Command="{Binding RequestOverlayCommand}"
-                CommandParameter="{Binding}"
                 Classes.open="{Binding IsSlidLeft}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Stretch"
@@ -111,6 +101,11 @@
                     <TextBlock FontSize="12" Opacity="0.7">
                         <Run Text="{Binding Quantity}"/>
                         <Run Text="{Binding UnitDisplay}"/>
+                    </TextBlock>
+                    <TextBlock Text="•" Opacity="0.5" FontSize="12"/>
+                    <TextBlock FontSize="12" Opacity="0.7">
+                        <Run Text="Exp:"/>
+                        <Run Text="{Binding ExpiryDate, StringFormat='{}{0:MM/dd/yy}'}"/>
                     </TextBlock>
                 </StackPanel>
             </StackPanel>

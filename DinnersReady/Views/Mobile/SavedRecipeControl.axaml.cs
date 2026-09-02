@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
-using DinnersReady.Models;
+using DinnersReady.ViewModels;
 
 namespace DinnersReady.Views.Mobile
 {
@@ -16,16 +14,34 @@ namespace DinnersReady.Views.Mobile
 
         private void OnSwipeGestureEnded(object? sender, SwipeGestureEndedEventArgs e)
         {
-            if (DataContext is not GeneratedRecipe item) return;
+            if (DataContext is not RecipeViewModel vm || vm.Model is null) return;
 
             // Left swipe opens (-X velocity), Right swipe closes (+X velocity)
-            if (e.Velocity.X < -100 && !item.IsSlidRight)
+            if (e.Velocity.X > -100)
             {
-                item.IsSlidRight = true;
+                if (vm.IsSlidRight)
+                {
+                    vm.IsSlidRight = false;
+                    vm.IsSlidLeft = false;
+                }
+                else if (!vm.IsSlidLeft)
+                {
+                    vm.IsSlidLeft = true;
+                    vm.IsSlidRight = false;
+                }
             }
-            else if (e.Velocity.X > 100 && item.IsSlidRight)
+            else if (e.Velocity.X < 100)
             {
-                item.IsSlidRight = false;
+                if (vm.IsSlidLeft)
+                {
+                    vm.IsSlidRight = false;
+                    vm.IsSlidLeft = false;
+                }
+                else if (!vm.IsSlidRight)
+                {
+                    vm.IsSlidRight = true;
+                    vm.IsSlidLeft = false;
+                }
             }
         }
     }

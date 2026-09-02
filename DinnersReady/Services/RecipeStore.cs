@@ -12,17 +12,17 @@ namespace DinnersReady.Services;
 
 public interface IRecipeStoreRepository
 {
-    Task SaveAsync(GeneratedRecipe item);
-    Task DeleteAsync(GeneratedRecipe item);
-    Task<IEnumerable<GeneratedRecipe>> LoadAllAsync();
+    Task SaveAsync(Recipe item);
+    Task DeleteAsync(Recipe item);
+    Task<IEnumerable<Recipe>> LoadAllAsync();
     Task ClearAllAsync();
 }
 
 public interface IRecipeStoreService
 {
-    Task AddRecipeAsync(GeneratedRecipe item);
-    Task RemoveRecipeAsync(GeneratedRecipe item);
-    Task<IEnumerable<GeneratedRecipe>> GetRecipesAsync();
+    Task AddRecipeAsync(Recipe item);
+    Task RemoveRecipeAsync(Recipe item);
+    Task<IEnumerable<Recipe>> GetRecipesAsync();
     Task ClearAllAsync();
 }
 
@@ -48,7 +48,7 @@ public class RecipeStoreRepository : IRecipeStoreRepository
         };
     }
 
-    private string GetFilePathForItem(GeneratedRecipe item)
+    private string GetFilePathForItem(Recipe item)
     {
         ArgumentNullException.ThrowIfNull(item);
         return GetFilePathFromId(item.Id);
@@ -62,7 +62,7 @@ public class RecipeStoreRepository : IRecipeStoreRepository
         return Path.Combine(_storageFolder, $"{safeHash}.json");
     }
 
-    public async Task<GeneratedRecipe?> GetByIdAsync(string itemId)
+    public async Task<Recipe?> GetByIdAsync(string itemId)
     {
         string filePath = GetFilePathFromId(itemId);
         if (!File.Exists(filePath)) return null;
@@ -70,7 +70,7 @@ public class RecipeStoreRepository : IRecipeStoreRepository
         try
         {
             using FileStream stream = File.OpenRead(filePath);
-            return await JsonSerializer.DeserializeAsync<GeneratedRecipe>(stream, _jsonOptions).ConfigureAwait(false);
+            return await JsonSerializer.DeserializeAsync<Recipe>(stream, _jsonOptions).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -79,14 +79,14 @@ public class RecipeStoreRepository : IRecipeStoreRepository
         }
     }
 
-    public async Task SaveAsync(GeneratedRecipe item)
+    public async Task SaveAsync(Recipe item)
     {
         string filePath = GetFilePathForItem(item);
         using FileStream stream = File.Create(filePath);
         await JsonSerializer.SerializeAsync(stream, item, _jsonOptions).ConfigureAwait(false);
     }
 
-    public Task DeleteAsync(GeneratedRecipe item)
+    public Task DeleteAsync(Recipe item)
     {
         string filePath = GetFilePathForItem(item);
         if (File.Exists(filePath))
@@ -95,9 +95,9 @@ public class RecipeStoreRepository : IRecipeStoreRepository
         return Task.CompletedTask;
     }
 
-    public async Task<IEnumerable<GeneratedRecipe>> LoadAllAsync()
+    public async Task<IEnumerable<Recipe>> LoadAllAsync()
     {
-        var items = new List<GeneratedRecipe>();
+        var items = new List<Recipe>();
         if (!Directory.Exists(_storageFolder)) return items;
 
         foreach (string filePath in Directory.GetFiles(_storageFolder, "*.json"))
@@ -105,7 +105,7 @@ public class RecipeStoreRepository : IRecipeStoreRepository
             try
             {
                 using FileStream stream = File.OpenRead(filePath);
-                var item = await JsonSerializer.DeserializeAsync<GeneratedRecipe>(stream, _jsonOptions).ConfigureAwait(false);
+                var item = await JsonSerializer.DeserializeAsync<Recipe>(stream, _jsonOptions).ConfigureAwait(false);
                 if (item != null)
                     items.Add(item);
             }
@@ -130,20 +130,20 @@ public class RecipeStoreRepository : IRecipeStoreRepository
 
 public class RecipeStore(IRecipeStoreRepository recipeStoreRepository) : IRecipeStoreService
 {
-    public async Task AddRecipeAsync(GeneratedRecipe item)
+    public async Task AddRecipeAsync(Recipe item)
     {
         if (item == null) return;
 
         await recipeStoreRepository.SaveAsync(item);
     }
 
-    public async Task RemoveRecipeAsync(GeneratedRecipe item)
+    public async Task RemoveRecipeAsync(Recipe item)
     {
         if (item == null) return;
         await recipeStoreRepository.DeleteAsync(item);
     }
 
-    public async Task<IEnumerable<GeneratedRecipe>> GetRecipesAsync() => await recipeStoreRepository.LoadAllAsync();
+    public async Task<IEnumerable<Recipe>> GetRecipesAsync() => await recipeStoreRepository.LoadAllAsync();
 
     public async Task ClearAllAsync() => await recipeStoreRepository.ClearAllAsync();
 }

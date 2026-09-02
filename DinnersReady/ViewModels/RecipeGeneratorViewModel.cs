@@ -14,7 +14,9 @@ public record RecipeGeneratorContext(
     RecipeGeneratorService RecipeService,
     IngredientStore IngredientService,
     RecipeStore RecipeStore,
-    IShareService ShareService
+    IShareService ShareService,
+    Action<Recipe>? OnShareRequested = null,
+    Action<Recipe>? OnDeleteRequested = null
 );
 
 public partial class RecipeGeneratorViewModel : ObservableObject
@@ -39,7 +41,7 @@ public partial class RecipeGeneratorViewModel : ObservableObject
 
     [ObservableProperty] public partial bool IsGenerating { get; set; } = false;
 
-    [ObservableProperty] public partial GeneratedRecipe? CurrentRecipe { get; set; } = null;
+    [ObservableProperty] public partial Recipe? CurrentRecipe { get; set; } = null;
 
     [RelayCommand]
     public async Task GenerateRecipeAsync(CancellationToken ct)
@@ -77,46 +79,7 @@ public partial class RecipeGeneratorViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task ShareRecipe()
-    {
-        if (CurrentRecipe is null || Services.ShareService is null) return;
-
-        var sb = new StringBuilder();
-        sb.AppendLine(CurrentRecipe.Title);
-        sb.AppendLine($"Prep: {CurrentRecipe.PrepTimeDisplay} | Cook: {CurrentRecipe.CookTimeDisplay}");
-        sb.AppendLine();
-
-        if (CurrentRecipe.UsedIngredients?.Count > 0)
-        {
-            sb.AppendLine("Ingredients:");
-            foreach (var ing in CurrentRecipe.UsedIngredients)
-            {
-                sb.AppendLine($"• {ing}");
-            }
-            sb.AppendLine();
-        }
-
-        if (CurrentRecipe.AdditionalIngredientsNeeded?.Count > 0)
-        {
-            sb.AppendLine("Additional Ingredients Needed:");
-            foreach (var ing in CurrentRecipe.AdditionalIngredientsNeeded)
-            {
-                sb.AppendLine($"• {ing}");
-            }
-            sb.AppendLine();
-        }
-
-        if (CurrentRecipe.Instructions?.Count > 0)
-        {
-            sb.AppendLine("Instructions:");
-            foreach (var step in CurrentRecipe.Instructions)
-            {
-                sb.AppendLine(step);
-            }
-        }
-
-        await Services.ShareService.ShareTextAsync(CurrentRecipe.Title ?? "Recipe", sb.ToString());
-    }
+    public async Task RequestShare() => Services.OnShareRequested?.Invoke(CurrentRecipe!);
 
     [RelayCommand]
     public void ClearRecipe() => CurrentRecipe = null;

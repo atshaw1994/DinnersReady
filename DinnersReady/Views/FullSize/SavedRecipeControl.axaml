@@ -4,27 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
              xmlns:designData="using:DinnersReady.DesignData"
              mc:Ignorable="d" d:DesignWidth="400"
              x:Class="DinnersReady.Views.FullSize.SavedRecipeControl"
-             x:DataType="models:GeneratedRecipe">
+             x:DataType="vm:RecipeViewModel">
     <!-- DESIGN-TIME RECIPE MOCK -->
     <Design.DataContext>
-        <x:Static Member="designData:GeneratedRecipe_DesignData.CheesyOmelette" />
+        <vm:RecipeViewModel />
     </Design.DataContext>
 
     <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
             BorderThickness="0,0,0,1"
-            Padding="12" >
+            Padding="12">
         <Grid ColumnDefinitions="*, Auto">
             <TextBlock Text="{Binding Title}" FontWeight="Bold" VerticalAlignment="Center"/>
 
-            <!-- Edit & Delete Actions -->
+            <!-- Action Buttons -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).ShareRecipeCommand}"
-                        CommandParameter="{Binding}"
+                <Button Command="{Binding RequestShareCommand}"
                         Padding="8" Width="36" Height="36" CornerRadius="18">
                     <Button.Styles>
                         <Style Selector="Button:pointerover /template/ ContentPresenter">
@@ -33,8 +31,7 @@
                     </Button.Styles>
                     <ic:FluentIcon Icon="ShareIos"/>
                 </Button>
-                <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteRecipeCommand}"
-                        CommandParameter="{Binding}"
+                <Button Command="{Binding RequestDeleteCommand}"
                         Padding="8" Width="36" Height="36" CornerRadius="18">
                     <Button.Styles>
                         <Style Selector="Button:pointerover /template/ ContentPresenter">

@@ -8,13 +8,13 @@ namespace DinnersReady.ViewModels;
 
 public partial class IngredientViewModel(
     Ingredient model,
-    Func<Ingredient, Task>? onDeleteRequested = null,
+    Func<IngredientViewModel, Task>? onDeleteRequested = null,
     Func<Ingredient, Task>? onEditRequested = null,
     Action<Ingredient>? onOverlayRequested = null) : ObservableObject
 {
     public IngredientViewModel() : this(new Ingredient()) { }
 
-    public Func<Ingredient, Task>? OnDeleteRequested { get; } = onDeleteRequested;
+    public Func<IngredientViewModel, Task>? OnDeleteRequested { get; } = onDeleteRequested;
     public Func<Ingredient, Task>? OnEditRequested { get; } = onEditRequested;
     public Action<Ingredient>? OnOverlayRequested { get; } = onOverlayRequested;
 
@@ -100,7 +100,7 @@ public partial class IngredientViewModel(
     #region Commands
 
     [RelayCommand]
-    public void RequestDelete() => _ = OnDeleteRequested?.Invoke(Model);
+    public void RequestDelete() => _ = OnDeleteRequested?.Invoke(this);
 
     [RelayCommand]
     public void RequestOverlay() => OnOverlayRequested?.Invoke(Model);

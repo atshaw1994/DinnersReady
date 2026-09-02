@@ -3,21 +3,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
-             xmlns:designData="using:DinnersReady.DesignData"
              xmlns:vm="using:DinnersReady.ViewModels"
-             xmlns:models="using:DinnersReady.Models"
+             xmlns:designData="using:DinnersReady.DesignData"
              mc:Ignorable="d" d:DesignWidth="360"
              x:Class="DinnersReady.Views.Mobile.SavedRecipeControl"
-             x:DataType="models:GeneratedRecipe">
-    <!-- DESIGN-TIME INGREDIENT MOCK -->
+             x:DataType="vm:RecipeViewModel">
     <Design.DataContext>
-        <x:Static Member="designData:GeneratedRecipe_DesignData.CheesyOmelette" />
+        <vm:RecipeViewModel Model="{x:Static designData:Recipes.CheesyOmelette}"/>
     </Design.DataContext>
     
     <Grid ClipToBounds="True">
+        <!-- Share Button (Revealed Behind) -->
+        <Button Command="{Binding RequestShareCommand}"
+                Classes.open="{Binding IsSlidLeft}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Padding="8" Width="64" CornerRadius="0">
+            <Button.Transitions>
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" 
+                                                   Duration="0:0:0.25" 
+                                                   Easing="CubicEaseOut"/>
+                </Transitions>
+            </Button.Transitions>
+            <Button.Styles>
+                <Style Selector="Button">
+                    <Setter Property="RenderTransform" Value="translateX(64px)" />
+                </Style>
+                <Style Selector="Button.open">
+                    <Setter Property="RenderTransform" Value="translateX(0px)" />
+                </Style>
+            </Button.Styles>
+            <ic:FluentIcon Icon="ShareIos" Foreground="White"/>
+        </Button>
+        
         <!-- Delete Button (Revealed Behind) -->
-        <Button Command="{Binding $parent[UserControl;1].((vm:MainViewModel)DataContext).DeleteRecipeCommand}"
-                CommandParameter="{Binding}"
+        <Button Command="{Binding RequestDeleteCommand}"
                 Classes.open="{Binding IsSlidRight}"
                 Background="Red"
                 VerticalAlignment="Stretch"
@@ -45,6 +66,7 @@
                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="0,0,0,1"
+                Classes.left="{Binding IsSlidLeft}"
                 Classes.right="{Binding IsSlidRight}"
                 Padding="12">
             <Border.Transitions>
@@ -58,6 +80,9 @@
             <Border.Styles>
                 <Style Selector="Border#MainBorder">
                     <Setter Property="RenderTransform" Value="translateX(0px)" />
+                </Style>
+                <Style Selector="Border#MainBorder.left">
+                    <Setter Property="RenderTransform" Value="translateX(-64px)" />
                 </Style>
                 <Style Selector="Border#MainBorder.right">
                     <Setter Property="RenderTransform" Value="translateX(64px)" />
