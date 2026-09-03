@@ -1,10 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using DinnersReady.Models;
+﻿using DinnersReady.Models;
 using DinnersReady.Services;
-using Xunit;
 
 namespace DinnersReady.Tests;
 
@@ -110,7 +105,7 @@ public class RepositoryIntegrationTests : IDisposable
         Assert.Equal(3, savedRecipe.UsedIngredients.Count);
 
         // Clean up store item
-        await repo.DeleteAsync(recipe);
+        await repo.DeleteAsync(recipe.Id);
     }
 
     #endregion

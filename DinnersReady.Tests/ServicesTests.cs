@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Headless.XUnit;
 using DinnersReady.Models;
 using DinnersReady.Services;
 using Microsoft.Extensions.AI;
 using Moq;
-using Xunit;
 
 namespace DinnersReady.Tests;
 
@@ -100,7 +93,7 @@ public class ServicesTests
         await store.RemoveRecipeAsync(recipe);
 
         // Assert
-        mockRepo.Verify(r => r.DeleteAsync(recipe), Times.Once);
+        mockRepo.Verify(r => r.DeleteAsync(recipe.Id), Times.Once);
     }
 
     #endregion

@@ -7,7 +7,6 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Net.Http;
 
@@ -30,46 +29,23 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
         var apiKey = ConfigService.GetGeminiApiKey();
-        // Create an HttpClient with Google's required header
+
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
-
-        var clientOptions = new OpenAIClientOptions
+        _ = new OpenAIClientOptions
         {
             Endpoint = new Uri("https://generativelanguage.googleapis.com/v1beta/openai"),
             Transport = new HttpClientPipelineTransport(httpClient)
         };
 
-        // Register Services & ViewModels
-        services.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
-        services.AddTransient<IngredientStore>();
-        services.AddSingleton<IRecipeStoreRepository, RecipeStoreRepository>();
-        services.AddTransient<RecipeStore>();
-        services.AddSingleton<IChatClient>(sp => new GeminiChatClient(apiKey, "gemini-3.6-flash"));
+        SetUpServices(services, apiKey);
 
-        services.AddSingleton<RecipeGeneratorService>();
-        services.AddTransient<RecipeGeneratorContext>();
-        services.AddSingleton<RecipeGeneratorViewModel>();
-        services.AddSingleton<MainServicesContext>();
-
-        // Register platform-specific Share Service
-        services.AddShareService();
-
-        services.AddTransient<MainViewModel>();
-
-        // Register Views for each platform profile
-        services.AddTransient<Views.FullSize.MainWindow>(); // Desktop Window Shell
-        services.AddTransient<Views.Web.MainView>();        // Browser UserControl
-        services.AddTransient<Views.Mobile.MainView>();     // Mobile UserControl
-
-        // Build container once
         Services = services.BuildServiceProvider();
 
         var mainVm = Services.GetRequiredService<MainViewModel>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Desktop (Windows/macOS/Linux)
             desktop.MainWindow = new Views.FullSize.MainWindow
             {
                 DataContext = mainVm
@@ -96,6 +72,41 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void SetUpServices(ServiceCollection services, string apiKey)
+    {
+        // 1. Storage Provider Registration (Platform-specific)
+        if (OperatingSystem.IsBrowser())
+        {
+            services.AddSingleton<IStorageProvider, WebLocalStorageProvider>();
+        }
+        else
+        {
+            services.AddSingleton<IStorageProvider, FileSystemStorageProvider>();
+        }
+
+        // 2. Repositories & Application Services
+        services.AddSingleton<IIngredientStoreRepository, IngredientStoreRepository>();
+        services.AddSingleton<IIngredientStoreService, IngredientStore>();
+        services.AddSingleton<IRecipeStoreRepository, RecipeStoreRepository>();
+        services.AddSingleton<IRecipeStoreService, RecipeStore>();
+
+        // 3. AI Chat Services
+        services.AddSingleton<IChatClient>(sp => new GeminiChatClient(apiKey, "gemini-3.6-flash"));
+        services.AddSingleton<RecipeGeneratorService>();
+
+        // 4. ViewModels & Contexts
+        services.AddTransient<RecipeGeneratorContext>();
+        services.AddTransient<RecipeGeneratorViewModel>();
+        services.AddSingleton<MainServicesContext>();
+
+        // 5. Platform Share Service & Views
+        services.AddShareService();
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<Views.FullSize.MainWindow>();
+        services.AddTransient<Views.Web.MainView>();
+        services.AddTransient<Views.Mobile.MainView>();
     }
 #pragma warning restore CA1416
 }

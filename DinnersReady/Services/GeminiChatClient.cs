@@ -25,21 +25,21 @@ public class GeminiChatClient(string apiKey, string model = "gemini-1.5-flash") 
             promptBuilder.AppendLine($"{msg.Role}: {msg.Text}");
         }
 
-        var requestBody = new
+        var requestBody = new GeminiRequest
         {
-            contents = new[]
+            Contents = new List<GeminiContent>
             {
-                new
+                new GeminiContent
                 {
-                    parts = new[]
+                    Parts = new List<GeminiPart>
                     {
-                        new { text = promptBuilder.ToString() }
+                        new GeminiPart { Text = promptBuilder.ToString() }
                     }
                 }
             }
         };
 
-        var jsonPayload = JsonSerializer.Serialize(requestBody);
+        string jsonPayload = JsonSerializer.Serialize(requestBody, DinnersReadyJsonContext.Default.GeminiRequest);
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
         var response = await _httpClient.PostAsync(url, content, cancellationToken);

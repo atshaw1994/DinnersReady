@@ -4,16 +4,15 @@ using DinnersReady.Models;
 using DinnersReady.Services;
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DinnersReady.ViewModels;
 
 public record RecipeGeneratorContext(
-    RecipeGeneratorService RecipeService,
-    IngredientStore IngredientService,
-    RecipeStore RecipeStore,
+    RecipeGeneratorService RecipeGenerator,
+    IIngredientStoreService IngredientService,
+    IRecipeStoreService RecipeService,
     IShareService ShareService,
     Action<Recipe>? OnShareRequested = null,
     Action<Recipe>? OnDeleteRequested = null
@@ -41,7 +40,9 @@ public partial class RecipeGeneratorViewModel : ObservableObject
 
     [ObservableProperty] public partial bool IsGenerating { get; set; } = false;
 
-    [ObservableProperty] public partial Recipe? CurrentRecipe { get; set; } = null;
+    [ObservableProperty] public partial RecipeViewModel? CurrentRecipe { get; set; } = null;
+
+    #region Commands
 
     [RelayCommand]
     public async Task GenerateRecipeAsync(CancellationToken ct)
@@ -51,7 +52,8 @@ public partial class RecipeGeneratorViewModel : ObservableObject
         {
             var ingredients = await Services.IngredientService.GetIngredientsAsync();
             var ingredientNames = ingredients.Select(i => i.Name);
-            CurrentRecipe = await Services.RecipeService.GenerateRecipeAsync(ingredientNames, ct);
+            var recipe = await Services.RecipeGenerator.GenerateRecipeAsync(ingredientNames, ct);
+            CurrentRecipe = new RecipeViewModel(recipe!);
         }
         catch (System.ClientModel.ClientResultException ex)
         {
@@ -72,15 +74,17 @@ public partial class RecipeGeneratorViewModel : ObservableObject
     public async Task RegenerateRecipeAsync(CancellationToken ct) => await GenerateRecipeAsync(ct);
 
     [RelayCommand]
-    public async Task SaveRecipe(CancellationToken ct) 
+    public async Task SaveRecipe(CancellationToken ct)
     {
         if (CurrentRecipe is not null)
-            await Services.RecipeStore.AddRecipeAsync(CurrentRecipe);
+            await Services.RecipeService.AddRecipeAsync(CurrentRecipe.Model);
     }
 
     [RelayCommand]
-    public async Task RequestShare() => Services.OnShareRequested?.Invoke(CurrentRecipe!);
+    public async Task RequestShare() => Services.OnShareRequested?.Invoke(CurrentRecipe!.Model);
 
     [RelayCommand]
-    public void ClearRecipe() => CurrentRecipe = null;
+    public void ClearRecipe() => CurrentRecipe = null; 
+
+    #endregion
 }

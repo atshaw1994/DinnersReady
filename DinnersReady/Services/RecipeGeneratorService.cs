@@ -9,11 +9,6 @@ namespace DinnersReady.Services;
 
 public class RecipeGeneratorService(IChatClient chatClient)
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     public async Task<Recipe?> GenerateRecipeAsync(IEnumerable<string> availableIngredients, CancellationToken ct = default)
     {
         var ingredientsText = string.Join(", ", availableIngredients);
@@ -29,26 +24,36 @@ public class RecipeGeneratorService(IChatClient chatClient)
           "cookTimeMinutes": 20,
           "usedIngredients": ["Item 1", "Item 2"],
           "additionalIngredientsNeeded": ["Optional Item"],
-          "instructions": ["Step 1...", "Step 2..."]
+          "instructions": ["1...", "2..."]
         }
         Do not include markdown code block formatting (like ```json). Return raw JSON only.
         """;
 
         var userPrompt = $"Available ingredients: {ingredientsText}";
 
+        var options = new ChatOptions
+        {
+            ResponseFormat = ChatResponseFormat.Json
+        };
+
         ChatResponse response = await chatClient.GetResponseAsync(
         [
             new(ChatRole.System, systemPrompt),
-        new(ChatRole.User, userPrompt)
-        ], cancellationToken: ct);
+            new(ChatRole.User, userPrompt)
+        ], options, cancellationToken: ct);
 
         var cleanJson = response.Text?.Trim();
         if (string.IsNullOrWhiteSpace(cleanJson))
             return null;
 
+        if (cleanJson.StartsWith("```json"))
+        {
+            cleanJson = cleanJson.Replace("```json", "").Replace("```", "").Trim();
+        }
+
         try
         {
-            return JsonSerializer.Deserialize<Recipe>(cleanJson, JsonOptions);
+            return JsonSerializer.Deserialize(cleanJson, DinnersReadyJsonContext.Default.Recipe);
         }
         catch (JsonException ex)
         {

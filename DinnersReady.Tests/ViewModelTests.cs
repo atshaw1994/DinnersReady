@@ -1,11 +1,7 @@
-using System;
-using System.Threading.Tasks;
-using Avalonia.Headless.XUnit;
 using DinnersReady.Models;
 using DinnersReady.Services;
 using DinnersReady.ViewModels;
 using Moq;
-using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 

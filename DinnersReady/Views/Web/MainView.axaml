@@ -26,14 +26,13 @@
                     <TextBlock Classes="headerText" Text="Home"/>
                 </ContentPage.Header>
 
-                <Grid>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
-                        <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
-                                   
-                        <!-- The view that displays progress and results -->
-                        <sharedviews:AiRecipeGenerator Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
-                    </StackPanel>
+                <!-- Use RowDefinitions so the AiRecipeGenerator gets constrained height -->
+                <Grid RowDefinitions="Auto,Auto,*">
+                    <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16,16,16,0"/>
+                    <TextBlock Grid.Row="1" Text="Add ingredients and then click Generate!" Margin="16,8"/>
+                   
+                    <!-- The view that displays progress and results -->
+                    <sharedviews:AiRecipeGenerator Grid.Row="2" Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
                 </Grid>
             </ContentPage>
 
