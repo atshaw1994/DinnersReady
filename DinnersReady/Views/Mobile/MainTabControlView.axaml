@@ -8,7 +8,6 @@
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="DinnersReady.Views.Mobile.MainTabControlView"
              x:DataType="vm:MainViewModel">
-
     <TabbedPage TabPlacement="Bottom" Foreground="White">
         <TabbedPage.Styles>
             <StyleInclude Source="/Assets/TabbedPageStyles.axaml" />
@@ -19,13 +18,15 @@
             <ContentPage.Header>
                 <TextBlock Classes="headerText" Text="Home"/>
             </ContentPage.Header>
-            <Grid>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16"/>
-                    <TextBlock Text="Add ingredients and then click Generate!" Margin="16"/>
-                    
-                    <sharedviews:AiRecipeGenerator Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
+            <Grid RowDefinitions="Auto,*">
+                <StackPanel IsVisible="{Binding RecipeGenerator.CurrentRecipe, 
+                                Converter={x:Static ObjectConverters.IsNull}}">
+                    <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16,16,16,0"/>
+                    <TextBlock Text="Add ingredients and then click Generate!" Margin="16,8"/>
                 </StackPanel>
+                   
+                <!-- The view that displays progress and results -->
+                <sharedviews:AiRecipeGenerator Grid.Row="1" Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
             </Grid>
         </ContentPage>
 

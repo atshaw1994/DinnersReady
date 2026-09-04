@@ -27,12 +27,15 @@
                 </ContentPage.Header>
 
                 <!-- Use RowDefinitions so the AiRecipeGenerator gets constrained height -->
-                <Grid RowDefinitions="Auto,Auto,*">
-                    <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16,16,16,0"/>
-                    <TextBlock Grid.Row="1" Text="Add ingredients and then click Generate!" Margin="16,8"/>
+                <Grid RowDefinitions="Auto,*">
+                    <StackPanel IsVisible="{Binding RecipeGenerator.CurrentRecipe, 
+                                    Converter={x:Static ObjectConverters.IsNull}}">
+                        <TextBlock Text="Welcome to DinnersReady!" FontSize="24" FontWeight="Bold" Margin="16,16,16,0"/>
+                        <TextBlock Text="Add ingredients and then click Generate!" Margin="16,8"/>
+                    </StackPanel>
                    
                     <!-- The view that displays progress and results -->
-                    <sharedviews:AiRecipeGenerator Grid.Row="2" Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
+                    <sharedviews:AiRecipeGenerator Grid.Row="1" Margin="8,0" DataContext="{Binding RecipeGenerator}"/>
                 </Grid>
             </ContentPage>
 

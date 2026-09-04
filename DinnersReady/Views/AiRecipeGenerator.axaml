@@ -16,7 +16,6 @@
                 <vm:RecipeViewModel Model="{x:Static designData:Recipes.CheesyOmelette}"/>
             </vm:RecipeGeneratorViewModel.CurrentRecipe>
         </vm:RecipeGeneratorViewModel>
-        <!--<vm:RecipeGeneratorViewModel />-->
     </Design.DataContext>
 
     <UserControl.Resources>

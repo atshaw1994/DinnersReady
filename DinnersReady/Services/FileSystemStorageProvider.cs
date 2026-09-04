@@ -60,11 +60,18 @@ public class FileSystemStorageProvider : IStorageProvider
 
         foreach (string file in files)
         {
-            string json = await File.ReadAllTextAsync(file);
-            var item = JsonSerializer.Deserialize(json, typeInfo);
-            if (item is T typedItem)
+            try
             {
-                items.Add(typedItem);
+                string json = await File.ReadAllTextAsync(file);
+                var item = JsonSerializer.Deserialize(json, typeInfo);
+                if (item is T typedItem)
+                {
+                    items.Add(typedItem);
+                }
+            }
+            catch (JsonException)
+            {
+                // Skip corrupted files
             }
         }
 
