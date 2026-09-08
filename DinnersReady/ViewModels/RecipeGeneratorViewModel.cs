@@ -15,6 +15,7 @@ public record RecipeGeneratorContext(
     IRecipeStoreService RecipeService,
     IShareService ShareService,
     Action<Recipe>? OnShareRequested = null,
+    Func<Recipe, Task>? OnSaveRequested = null,
     Action<Recipe>? OnDeleteRequested = null
 );
 
@@ -74,10 +75,10 @@ public partial class RecipeGeneratorViewModel : ObservableObject
     public async Task RegenerateRecipeAsync(CancellationToken ct) => await GenerateRecipeAsync(ct);
 
     [RelayCommand]
-    public async Task SaveRecipe(CancellationToken ct)
+    public async Task SaveRecipe()
     {
-        if (CurrentRecipe is not null)
-            await Services.RecipeService.AddRecipeAsync(CurrentRecipe.Model);
+        if (CurrentRecipe is not null && Services.OnSaveRequested is not null)
+            await Services.OnSaveRequested.Invoke(CurrentRecipe.Model);
     }
 
     [RelayCommand]

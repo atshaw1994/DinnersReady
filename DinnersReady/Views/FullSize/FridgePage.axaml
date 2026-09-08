@@ -33,7 +33,7 @@
                 Margin="16" Padding="16"
                 Width="64" Height="64"
                 CornerRadius="32"
-                Command="{Binding OpenAddFormCommand}"
+                Command="{Binding FormItem.OpenAddFormCommand}"
                 HorizontalAlignment="Center" 
                 HorizontalContentAlignment="Center">
                 <ic:FluentIcon Icon="Add" IconVariant="Filled"/>

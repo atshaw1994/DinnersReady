@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DinnersReady.Views.FloatingAddButton"
              x:DataType="vm:MainViewModel">
-    <Button Command="{Binding OpenAddFormCommand}"
+    <Button Command="{Binding FormItem.OpenAddFormCommand}"
             VerticalAlignment="Bottom" HorizontalAlignment="Right" 
             Width="56" Height="56" Margin="0,0,16,64"
             CornerRadius="48">

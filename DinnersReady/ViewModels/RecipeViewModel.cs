@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DinnersReady.Models;
+using DinnersReady.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,14 +11,13 @@ namespace DinnersReady.ViewModels;
 public partial class RecipeViewModel(
     Recipe model,
     Func<RecipeViewModel, Task>? onDeleteRequested = null,
-    Func<RecipeViewModel, Task>? onShareRequested = null) : ObservableObject
+    IShareService? ShareService = null) : ObservableObject
 {
     // Fixes potential runtime crash for XAML design tooling
     public RecipeViewModel() : this(new Recipe()) { }
 
     public Recipe Model { get; set; } = model ?? throw new ArgumentNullException(nameof(model));
 
-    public Func<RecipeViewModel, Task>? OnShareRequested { get; set; } = onShareRequested;
     public Func<RecipeViewModel, Task>? OnDeleteRequested { get; set; } = onDeleteRequested;
 
     #region Wrapped Model Properties
@@ -102,7 +102,14 @@ public partial class RecipeViewModel(
     #region Commands
 
     [RelayCommand]
-    public async Task RequestShare() => OnShareRequested?.Invoke(this);
+    public async Task RequestShare()
+    {
+        if (ShareService != null)
+        {
+            var shareText = ToShareableText();
+            await ShareService.ShareTextAsync(Title, shareText);
+        }
+    }
 
     [RelayCommand]
     public async Task RequestDelete() => OnDeleteRequested?.Invoke(this);

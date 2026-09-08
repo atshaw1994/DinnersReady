@@ -9,13 +9,13 @@
              x:Class="DinnersReady.Views.Mobile.AddIngredientOverlayView"
              x:DataType="vm:MainViewModel">
     <Design.DataContext>
-        <vm:MainViewModel IsAddingItem="True"/>
+        <vm:MainViewModel/>
     </Design.DataContext>
 
     <Grid x:Name="OverlayPanel"
           Background="{DynamicResource SystemRegionBrush}" 
           RowDefinitions="Auto, *, Auto"
-          Classes.open="{Binding IsAddingItem}">
+          Classes.open="{Binding FormItem.IsAddingItem}">
         <Grid.Transitions>
             <Transitions>
                 <TransformOperationsTransition Property="RenderTransform" 
@@ -38,7 +38,7 @@
                    FontSize="20" 
                    FontWeight="Bold" 
                    Margin="16"
-                   IsVisible="{Binding !IsEditingItem}"
+                   IsVisible="{Binding !FormItem.IsEditingItem}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
 
@@ -46,7 +46,7 @@
                    FontSize="20" 
                    FontWeight="Bold" 
                    Margin="16"
-                   IsVisible="{Binding IsEditingItem}"
+                   IsVisible="{Binding FormItem.IsEditingItem}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/> 
 
@@ -56,7 +56,7 @@
                 <!-- Searchable Ingredient Name -->
                 <StackPanel Spacing="4" Margin="0,8">
                     <TextBlock Text="Ingredient Name"/>
-                    <AutoCompleteBox Text="{Binding NewItemName, Mode=TwoWay}"
+                    <AutoCompleteBox Text="{Binding FormItem.Name, Mode=TwoWay}"
                                      ItemsSource="{Binding IngredientSuggestions}"
                                      FilterMode="StartsWithOrdinal"
                                      PlaceholderText="e.g. Cumin, Beef, Potatoes"/>
@@ -65,13 +65,13 @@
                 <!-- Category -->
                 <StackPanel Spacing="4" Margin="0,8" Grid.Row="1">
                     <TextBlock Text="Category"/>
-                    <TextBox Text="{Binding NewItemCategory}" PlaceholderText="e.g. Spice, Produce, Meat"/>
+                    <TextBox Text="{Binding FormItem.Category}" PlaceholderText="e.g. Spice, Produce, Meat"/>
                 </StackPanel>
 
                 <!-- Location Dropdown -->
                 <StackPanel Spacing="4" Margin="0,8" Grid.Row="2">
                     <TextBlock Text="Location"/>
-                    <ComboBox SelectedIndex="{Binding LocationIndex}" HorizontalAlignment="Stretch">
+                    <ComboBox SelectedIndex="{Binding FormItem.LocationIndex}" HorizontalAlignment="Stretch">
                         <ComboBoxItem>Fridge</ComboBoxItem>
                         <ComboBoxItem>Pantry</ComboBoxItem>
                     </ComboBox>
@@ -81,12 +81,12 @@
                 <Grid ColumnDefinitions="2*, 2*" Margin="0,8" Grid.Row="3">
                     <StackPanel Spacing="4">
                         <TextBlock Text="Quantity"/>
-                        <NumericUpDown Value="{Binding NewItemQuantity}" Minimum="0.1" Increment="1"/>
+                        <NumericUpDown Value="{Binding FormItem.Quantity}" Minimum="0.1" Increment="1"/>
                     </StackPanel>
         
                     <StackPanel Grid.Column="1" Spacing="4" Margin="16,0,0,0">
                         <TextBlock Text="Unit"/>
-                        <ComboBox SelectedValue="{Binding SelectedUnit}" 
+                        <ComboBox SelectedValue="{Binding FormItem.Unit}" 
                                   HorizontalAlignment="Stretch"
                                   ItemsSource="{Binding Source={x:Static models:MeasurementUnits.AllUnits}}"/>
                     </StackPanel>
@@ -95,20 +95,20 @@
                 <!-- Expiry Date -->
                 <StackPanel Spacing="4" Margin="0,8" Grid.Row="4">
                     <TextBlock Text="Expiry Date"/>
-                    <DatePicker SelectedDate="{Binding NewItemExpiry}" HorizontalAlignment="Stretch"/>
+                    <DatePicker SelectedDate="{Binding FormItem.ExpiryDate}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
 
         <!-- Action Buttons -->
         <Grid Margin="16" Grid.Row="2">
-            <Button Command="{Binding CloseAddFormCommand}" 
+            <Button Command="{Binding FormItem.CloseAddFormCommand}" 
                     CornerRadius="40"
                     Width="56" Height="56">
                 <ic:FluentIcon Icon="Dismiss" IconVariant="Filled"/>
             </Button>
                     
-            <Button Command="{Binding SaveItemCommand}" 
+            <Button Command="{Binding FormItem.SaveItemCommand}" 
                     CornerRadius="40"
                     HorizontalAlignment="Right"
                     Width="56" Height="56">

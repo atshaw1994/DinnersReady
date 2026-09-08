@@ -52,10 +52,10 @@ public class ViewModelTests
         bool callbackInvoked = false;
         var vm = new IngredientViewModel(
             new Ingredient(),
-            onDeleteRequested: deletedVm =>
+            onSaveRequested: async item =>
             {
                 callbackInvoked = true;
-                return Task.CompletedTask;
+                await Task.CompletedTask;
             });
 
         // Act
@@ -131,13 +131,15 @@ public class ViewModelTests
     {
         // Arrange
         bool callbackInvoked = false;
+        var mockShareService = new Mock<IShareService>();
+        mockShareService
+            .Setup(s => s.ShareTextAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .Callback(() => callbackInvoked = true)
+            .Returns(Task.CompletedTask);
+
         var vm = new RecipeViewModel(
             new Recipe(),
-            onShareRequested: sharedVm =>
-            {
-                callbackInvoked = true;
-                return Task.CompletedTask;
-            });
+            ShareService: mockShareService.Object);
 
         // Act
         await vm.RequestShareCommand.ExecuteAsync(null);
@@ -157,12 +159,12 @@ public class ViewModelTests
         var mainVm = new MainViewModel(CreateMockServicesContext());
 
         // Act & Assert - Open Form
-        mainVm.OpenAddFormCommand.Execute(null);
-        Assert.True(mainVm.IsAddingItem);
+        mainVm.FormItem.OpenAddFormCommand.Execute(null);
+        Assert.True(mainVm.FormItem.IsAddingItem);
 
         // Act & Assert - Close Form
-        mainVm.CloseAddFormCommand.Execute(null);
-        Assert.False(mainVm.IsAddingItem);
+        mainVm.FormItem.CloseAddFormCommand.Execute(null);
+        Assert.False(mainVm.FormItem.IsAddingItem);
     }
 
     [Fact]
